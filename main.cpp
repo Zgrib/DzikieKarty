@@ -16,6 +16,8 @@
 sf::Texture placeholder;
 sf::Texture card;
 
+
+
 #include "Interface.cpp"
 
 
@@ -44,8 +46,34 @@ int main() {
 
     CustomDrawable background(-10);
     background.setTexture(placeholder);
+    background.setColor(sf::Color(200,141,60));
     background.setScale((float)window.getSize().x/(float)placeholder.getSize().x, (float)window.getSize().y/(float)placeholder.getSize().y);
     Drawables.emplace_back(&background);
+
+    CustomDrawable leftPanel(-8);
+    leftPanel.setTexture(placeholder);
+    leftPanel.setColor(sf::Color(229,161,80));
+    leftPanel.setScale((float)window.getSize().x*0.25/(float)placeholder.getSize().x, (float)window.getSize().y*0.7/(float)placeholder.getSize().y);
+    Drawables.emplace_back(&leftPanel);
+
+
+    CustomDrawable rightPanel(-8);
+    rightPanel.setTexture(placeholder);
+    rightPanel.setPosition(window.getSize().x*0.75,0);
+    rightPanel.setColor(sf::Color(229,161,80));
+    rightPanel.setScale((float)window.getSize().x*0.25/(float)placeholder.getSize().x, (float)window.getSize().y*0.7/(float)placeholder.getSize().y);
+    Drawables.emplace_back(&rightPanel);
+
+    CustomDrawable bottomPanel(-8);
+    bottomPanel.setTexture(placeholder);
+    bottomPanel.setOrigin(0,placeholder.getSize().y);
+    bottomPanel.setPosition(0,window.getSize().y);
+    bottomPanel.setColor(sf::Color(250,181,100));
+    Drawables.emplace_back(&bottomPanel);
+    bottomPanel.setScale((float)window.getSize().x/(float)placeholder.getSize().x, (float)window.getSize().y*0.3/(float)placeholder.getSize().y);
+
+
+
 
 
     CustomDrawable sprite(0);
