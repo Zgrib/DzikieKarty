@@ -6,22 +6,22 @@
 
 
 #include "Rendering.h"
+#include "Card.h"
 
-
-//moze warto by bylo zaimplementowac jakas metode sortowania wektora dla kontroli co sie renderuje szybciej
-///lista wszystkich obiektow ktore mozna renderowac
-//std::vector<sf::Drawable *> Objects;
 
 
 sf::Texture placeholder;
 sf::Texture card;
+sf::Texture cardReverse;
+sf::Texture cardBackground;
+sf::Texture cardSlot;
 
-
+///lista wszystkich obiektow ktore mozna renderowac
+std::vector<CustomDrawable*> Drawables;
 
 #include "Interface.cpp"
 
-
-
+std::vector<std::vector<Card*>> board;
 
 
 int main() {
@@ -30,47 +30,18 @@ int main() {
     //sf::View view;
     //view.reset(sf::FloatRect(0, 0, 1200, 800));
     //window.setView(view);
-    std::vector<CustomDrawable*> Drawables;
 
-
-    if (!card.loadFromFile("../../../resources/karta.png")) {
-        std::cerr << "Could not load texture !" << std::endl;
-        return 1;
+    try{
+        LoadTextures();
     }
-
-    if (!placeholder.loadFromFile("../../../resources/placeholder.png")) {
-        std::cerr << "Could not load texture !" << std::endl;
-        return 1;
+    catch(std::string string){
+        std::cout<<string<<"\n";
+        return 0;
     }
+    DrawInterface(window);
 
 
-    CustomDrawable background(-10);
-    background.setTexture(placeholder);
-    background.setColor(sf::Color(200,141,60));
-    background.setScale((float)window.getSize().x/(float)placeholder.getSize().x, (float)window.getSize().y/(float)placeholder.getSize().y);
-    Drawables.emplace_back(&background);
 
-    CustomDrawable leftPanel(-8);
-    leftPanel.setTexture(placeholder);
-    leftPanel.setColor(sf::Color(229,161,80));
-    leftPanel.setScale((float)window.getSize().x*0.25/(float)placeholder.getSize().x, (float)window.getSize().y*0.7/(float)placeholder.getSize().y);
-    Drawables.emplace_back(&leftPanel);
-
-
-    CustomDrawable rightPanel(-8);
-    rightPanel.setTexture(placeholder);
-    rightPanel.setPosition(window.getSize().x*0.75,0);
-    rightPanel.setColor(sf::Color(229,161,80));
-    rightPanel.setScale((float)window.getSize().x*0.25/(float)placeholder.getSize().x, (float)window.getSize().y*0.7/(float)placeholder.getSize().y);
-    Drawables.emplace_back(&rightPanel);
-
-    CustomDrawable bottomPanel(-8);
-    bottomPanel.setTexture(placeholder);
-    bottomPanel.setOrigin(0,placeholder.getSize().y);
-    bottomPanel.setPosition(0,window.getSize().y);
-    bottomPanel.setColor(sf::Color(250,181,100));
-    Drawables.emplace_back(&bottomPanel);
-    bottomPanel.setScale((float)window.getSize().x/(float)placeholder.getSize().x, (float)window.getSize().y*0.3/(float)placeholder.getSize().y);
 
 
 
@@ -101,7 +72,7 @@ int main() {
 
 
 
-    DrawInterface();
+    //DrawInterface();
 
     std::sort(Drawables.begin(), Drawables.end(), [](const  CustomDrawable* a, const  CustomDrawable* b){ return (a->z < b->z);});
 
