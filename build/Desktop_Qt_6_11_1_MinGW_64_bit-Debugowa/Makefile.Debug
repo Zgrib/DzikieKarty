@@ -54,7 +54,10 @@ SOURCES       = ..\..\main.cpp
 OBJECTS       = debug/main.o
 
 DIST          = resources/karta.png \
-		resources/placeholder.png Rendering.h ..\..\main.cpp
+		resources/placeholder.png \
+		resources/phSlot.png \
+		resources/phCard.png Card.h \
+		Rendering.h ..\..\main.cpp
 QMAKE_TARGET  = test
 DESTDIR        = debug\ #avoid trailing-slash linebreak
 TARGET         = test.exe
@@ -178,6 +181,7 @@ debug/main.o: ../../main.cpp C:/SFML-2.5.1/include/SFML/Window.hpp \
 		C:/SFML-2.5.1/include/SFML/Graphics/Text.hpp \
 		C:/SFML-2.5.1/include/SFML/Graphics/VertexBuffer.hpp \
 		../../Rendering.h \
+		../../Card.h \
 		../../Interface.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o ..\..\main.cpp
 
