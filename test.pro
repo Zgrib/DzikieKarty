@@ -14,8 +14,12 @@ win32 {
         LIBS += -lsfml-audio -lsfml-graphics -lsfml-network -lsfml-system -lsfml-window
     }
 } else {
-    # Linux / macOS
     INCLUDEPATH += /usr/local/include
     LIBS += -L/usr/local/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
     QMAKE_LFLAGS += -Wl,-rpath,/usr/local/lib
 }
+DISTFILES += resources/karta.png
+
+QMAKE_POST_LINK += mkdir -p $$OUT_PWD/resources || true
+QMAKE_POST_LINK += cp -r $$PWD/resources/* $$OUT_PWD/resources || true
+

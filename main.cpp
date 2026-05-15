@@ -3,6 +3,8 @@
 #include <SFML/Graphics.hpp>
 
 
+
+
 int main() {
     // create the window
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
@@ -25,6 +27,17 @@ int main() {
     triangle.setOutlineThickness(5);
     triangle.setPosition(600.0, 100.0);
 
+    sf::Texture texture;
+    if (!texture.loadFromFile("resources/karta.png")) {
+        std::cerr << "Could not load texture !" << std::endl;
+        return 1;
+    }
+
+    sf::Sprite sprite;
+    sprite.setTexture(texture);
+    sprite.setScale(0.2,0.2);
+    sprite.setPosition(200,200);
+
     // run the program as long as the window is open
     while (window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -40,10 +53,10 @@ int main() {
 
         // draw everything here...
         window.draw(circle);
-        window.draw(rectangle);
-        window.draw(triangle);
+        //window.draw(rectangle);
+        //window.draw(triangle);
+        window.draw(sprite);
 
-        // end the current frame
         window.display();
     }
 
