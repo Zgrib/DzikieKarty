@@ -9,7 +9,6 @@
 #include "Card.h"
 
 
-
 sf::Texture placeholder;
 sf::Texture card;
 sf::Texture cardReverse;
@@ -21,23 +20,50 @@ std::vector<CustomDrawable*> Drawables;
 
 #include "Interface.cpp"
 
+//może lepiej aby to były sloty na kartę a nie po prostu karty???
+//to chyba zależy, tak też można
 std::vector<std::vector<Card*>> board;
 
+
+
+
+
+/*
+    Aktualnie glownie interfejsem by (moim zdaniem) warto bylo sie zajac,
+    ale to jest git i version control, wiec mozna to robic rownolegle z innymi rzeczami.
+
+    TODO: (to dopiero luzne plany na rozbudowe)
+
+
+-skalować dynamicznie obiekty z klasy board, tak jak było na makiecie (3x4 albo 3x5)
+
+-ogarnac jakas implementacje skalowania/pozycji relatywnych do innego obiektu. to duzo ulatwi w robieniu interfejsu, jakis freestyle najlepiej.
+
+-reszta implementacji klasy Card-- konstruktor, destruktor i relatywne pozycje tekstu (i innych podelementow karty) wzgledem samej karty
+    aby ruszanie karty bylo proste i bezbolesne. przykladowo card.setPosition(int x, int y), gdzie podelementy karty takie jak nazwa (tekst)
+    sprite i statystyki (tekst) zostaly wzgledem karty nie ruszone
+
+    na cholere taka rozprawke o tym napisalem? nie wiem
+
+-interakcja z interfejsem? samo wykrywanie wystarczy chyba
+
+
+
+*/
 
 int main() {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Dzikie Karty");
-    //sf::View view;
-    //view.reset(sf::FloatRect(0, 0, 1200, 800));
-    //window.setView(view);
+
 
     try{
         LoadTextures();
     }
-    catch(std::string string){
+    catch(std::string string){ //try catch bo tak chyba lepiej niz masa returnow
         std::cout<<string<<"\n";
         return 0;
     }
+
     DrawInterface(window);
 
 
@@ -72,8 +98,6 @@ int main() {
 
 
 
-    //DrawInterface();
-
     std::sort(Drawables.begin(), Drawables.end(), [](const  CustomDrawable* a, const  CustomDrawable* b){ return (a->z < b->z);});
 
 
@@ -90,16 +114,12 @@ int main() {
         // clear the window with black color
         window.clear(sf::Color::Black);
 
-        //sprite2.rotate(0.1);
+
 
         for(auto obj: Drawables){
             window.draw(*obj);
         }
 
-
-        //ts rotates
-        //view.rotate(0.1);
-        //window.setView(view);
 
         window.display();
     }
