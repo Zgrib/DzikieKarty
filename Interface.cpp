@@ -40,20 +40,20 @@ void DrawInterface(sf::RenderWindow& window){
 
 void LoadTextures(){
 
-    if (!card.loadFromFile("../../../resources/karta.png")) {
+    if (!card.loadFromFile("resources/karta.png")) {
         throw (std::string)"Could not load texture !";
     }
 
-    if (!placeholder.loadFromFile("../../../resources/placeholder.png")) {
+    if (!placeholder.loadFromFile("resources/placeholder.png")) {
         throw (std::string)"Could not load texture !";
     }
-    if (!cardReverse.loadFromFile("../../../resources/placeholder.png")) {
+    if (!cardReverse.loadFromFile("resources/placeholder.png")) {
         throw (std::string)"Could not load texture !";
     }
-    if (!cardBackground.loadFromFile("../../../resources/phCard.png")) {
+    if (!cardBackground.loadFromFile("resources/phCard.png")) {
         throw (std::string)"Could not load texture !";
     }
-    if (!cardSlot.loadFromFile("../../../resources/phSlot.png")) {
+    if (!cardSlot.loadFromFile("resources/phSlot.png")) {
         throw (std::string)"Could not load texture !";
     }
 

@@ -18,6 +18,9 @@ sf::Texture cardSlot;
 ///lista wszystkich obiektow ktore mozna renderowac
 std::vector<CustomDrawable*> Drawables;
 
+std::vector<Card*> Cards;
+
+bool cardMoving =false;
 #include "Interface.cpp"
 
 //może lepiej aby to były sloty na kartę a nie po prostu karty???
@@ -73,34 +76,34 @@ int main() {
 
 
 
-    CustomDrawable sprite(0);
+    Card sprite(0);
     sprite.setTexture(card);
     sprite.setScale(0.2,0.2);
     sprite.setPosition(200,200);
-    Drawables.emplace_back(&sprite);
+    Cards.emplace_back(&sprite);
 
 
-    CustomDrawable sprite2(-1);
+    Card sprite2(-1);
     sprite2.setTexture(card);
     sprite2.setScale(0.2,0.2);
-    sprite2.setPosition(150,100);
+    sprite2.setPosition(500,100);
     sprite2.setColor(sf::Color(200,100,0));
-    Drawables.emplace_back(&sprite2);
+    Cards.emplace_back(&sprite2);
 
 
 
-    CustomDrawable sprite3(10);
+    Card sprite3(10);
     sprite3.setTexture(card);
     sprite3.setScale(0.2,0.2);
     sprite3.setPosition(100,150);
     sprite3.setColor(sf::Color(100,200,0));
-    Drawables.emplace_back(&sprite3);
+    Cards.emplace_back(&sprite3);
 
 
 
-    std::sort(Drawables.begin(), Drawables.end(), [](const  CustomDrawable* a, const  CustomDrawable* b){ return (a->z < b->z);});
+    std::sort(Drawables.begin(), Drawables.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
 
-
+   std::sort(Cards.begin(), Cards.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
     // run the program as long as the window is open
     while (window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -109,6 +112,24 @@ int main() {
             // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
+            if (event.type == sf::Event::MouseButtonPressed) {
+                            if(event.mouseButton.button == sf::Mouse::Left) {
+                                sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                                std::cout << "Mouse clicked: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
+                                for (auto &r: Cards) {
+                                    if (r->contains(mouse_pos))
+                                        r->setSelected(!r->isSelected());
+                                }
+                            }
+                        }
+            for (auto &r: Cards){
+            if(r->isSelected()){
+                sf::Vector2i mouse_pos =sf::Mouse::getPosition(window);
+                r->setPosition(mouse_pos.x,mouse_pos.y);
+                cardMoving=true;
+            }
+            }
+
         }
 
         // clear the window with black color
@@ -118,8 +139,12 @@ int main() {
 
         for(auto obj: Drawables){
             window.draw(*obj);
-        }
 
+        }
+        for(auto obj: Cards){
+            window.draw(*obj);
+
+        }
 
         window.display();
     }

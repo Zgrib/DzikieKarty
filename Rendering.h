@@ -6,10 +6,16 @@
 class CustomDrawable:public sf::Sprite{
 public:
     ///wartosc z to kolejnosc rysowania obiektow
-    int z;
+
 
     CustomDrawable(int _z = 0){
         z=_z;
     }
+    const int &getZ(){
+        return z;
+    }
+
+private:
+        int z;
 
 };

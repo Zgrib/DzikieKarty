@@ -23,6 +23,7 @@ DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png 
 
 QMAKE_POST_LINK += mkdir -p $$OUT_PWD/resources || true
 QMAKE_POST_LINK += cp -r $$PWD/resources/* $$OUT_PWD/resources || true
+RESOURCES += resources.qrc
 
 HEADERS += \
     Card.h \
