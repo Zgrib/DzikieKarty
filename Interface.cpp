@@ -43,7 +43,6 @@ void LoadTextures(){
     if (!card.loadFromFile("resources/karta.png")) {
         throw (std::string)"Could not load texture !";
     }
-
     if (!placeholder.loadFromFile("resources/placeholder.png")) {
         throw (std::string)"Could not load texture !";
     }

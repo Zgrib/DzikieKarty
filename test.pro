@@ -19,7 +19,8 @@ win32 {
     LIBS += -L/usr/local/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
     QMAKE_LFLAGS += -Wl,-rpath,/usr/local/lib
 }
-DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png resources/phCard.png
+DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png resources/phCard.png \
+    dzikiekarty.qmodel
 
 QMAKE_POST_LINK += mkdir -p $$OUT_PWD/resources || true
 QMAKE_POST_LINK += cp -r $$PWD/resources/* $$OUT_PWD/resources || true
@@ -27,5 +28,6 @@ RESOURCES += resources.qrc
 
 HEADERS += \
     Card.h \
+    Interactive.h \
     Rendering.h
 

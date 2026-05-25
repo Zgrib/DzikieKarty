@@ -6,6 +6,7 @@
 
 
 #include "Rendering.h"
+#include "Interactive.h"
 #include "Card.h"
 
 
@@ -20,7 +21,7 @@ std::vector<CustomDrawable*> Drawables;
 
 std::vector<Card*> Cards;
 
-bool cardMoving =false;
+
 #include "Interface.cpp"
 
 //może lepiej aby to były sloty na kartę a nie po prostu karty???
@@ -87,7 +88,7 @@ int main() {
     sprite2.setTexture(card);
     sprite2.setScale(0.2,0.2);
     sprite2.setPosition(500,100);
-    sprite2.setColor(sf::Color(200,100,0));
+    sprite2.setOrginalColor(sf::Color(200,100,0));
     Cards.emplace_back(&sprite2);
 
 
@@ -96,7 +97,7 @@ int main() {
     sprite3.setTexture(card);
     sprite3.setScale(0.2,0.2);
     sprite3.setPosition(100,150);
-    sprite3.setColor(sf::Color(100,200,0));
+    sprite3.setOrginalColor(sf::Color(100,200,0));
     Cards.emplace_back(&sprite3);
 
 
@@ -117,19 +118,23 @@ int main() {
                                 sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
                                 std::cout << "Mouse clicked: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
                                 for (auto &r: Cards) {
-                                    if (r->contains(mouse_pos))
+                                    if (r->contains(mouse_pos)){
                                         r->setSelected(!r->isSelected());
+                                    }
+
+                                    }
                                 }
                             }
-                        }
-            for (auto &r: Cards){
-            if(r->isSelected()){
-                sf::Vector2i mouse_pos =sf::Mouse::getPosition(window);
-                r->setPosition(mouse_pos.x,mouse_pos.y);
-                cardMoving=true;
-            }
-            }
 
+                        }
+
+
+        for( auto obj: Cards){
+            if (obj->isSelected())
+                obj->setColor(obj->getSelectedColor());
+            else{
+                    obj->setColor(obj->getOrginalColor());
+            }
         }
 
         // clear the window with black color
@@ -142,6 +147,7 @@ int main() {
 
         }
         for(auto obj: Cards){
+
             window.draw(*obj);
 
         }
