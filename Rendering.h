@@ -59,6 +59,7 @@ public:
         for(auto child:children)
             child->setWindow(_window);
 
+
     }
 
     void setRelativePosition(sf::Vector2f posRel){
