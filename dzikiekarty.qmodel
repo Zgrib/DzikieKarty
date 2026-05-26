@@ -50,7 +50,7 @@
                          <object>{fdc7c29a-0038-4c77-b151-1d257d24ddff}</object>
                          <name>Card</name>
                          <pos>x:275;y:80</pos>
-                         <rect>x:-60;y:-55;w:120;h:110</rect>
+                         <rect>x:-60;y:-60;w:120;h:120</rect>
                          <visual-role>0</visual-role>
                          <visual-role2>5</visual-role2>
                         </DObject>
@@ -72,7 +72,7 @@
                          <object>{40957f2d-8a1d-42a1-908c-9a502950b2f2}</object>
                          <name>CustomDrawable</name>
                          <pos>x:500;y:-240</pos>
-                         <rect>x:-100;y:-50;w:200;h:100</rect>
+                         <rect>x:-105;y:-50;w:210;h:100</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -93,7 +93,7 @@
                          <object>{c6394f91-e93d-421f-85d5-ef741334a453}</object>
                          <name>BattleEngine</name>
                          <pos>x:290;y:300</pos>
-                         <rect>x:-55;y:-50;w:110;h:100</rect>
+                         <rect>x:-50;y:-50;w:100;h:100</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -287,7 +287,7 @@
                          <object>{179681f8-754b-461e-a13d-0a0791da8b07}</object>
                          <name>Interactive</name>
                          <pos>x:275;y:-80</pos>
-                         <rect>x:-75;y:-65;w:150;h:130</rect>
+                         <rect>x:-80;y:-70;w:160;h:140</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -382,7 +382,7 @@
                          <object>{90546023-1781-4779-b216-d22283ab2761}</object>
                          <name>Battleground</name>
                          <pos>x:540;y:90</pos>
-                         <rect>x:-65;y:-45;w:130;h:90</rect>
+                         <rect>x:-60;y:-45;w:120;h:90</rect>
                          <visual-role>0</visual-role>
                         </DObject>
                        </base-DObject>
@@ -702,21 +702,21 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{8dfeabbe-6b9e-4bd0-b8b9-0bf9361a4737}</uid>
+                    <uid>{397cf989-00f8-42fd-bc79-f942ab6bd129}</uid>
                     <type>1</type>
                     <declaration>-int z</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{6f5b2303-49ca-4903-9bcb-0d98fd050ca9}</uid>
+                    <uid>{728bdf6e-8f76-4e2f-a15e-d7d7b01336a0}</uid>
                     <type>1</type>
                     <declaration>-vector&lt;CustomDrawable*&gt; children</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{b8de50f7-7444-46be-87a5-d21742bc1837}</uid>
+                    <uid>{a42f0e92-2d74-4a8c-9e52-84a1d7c45df0}</uid>
                     <type>1</type>
                     <declaration>-void Drawhildern</declaration>
                    </MClassMember>
@@ -843,21 +843,21 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{6eb4ed69-40dd-499b-aca8-fe8eacab5979}</uid>
+                    <uid>{3a2e76c4-2417-4e18-95bd-a3960a41d3c2}</uid>
                     <type>2</type>
                     <declaration>+PrepareBattle()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{1f613bb8-be92-4136-9ef6-60e2bd488a86}</uid>
+                    <uid>{7fbee059-8cf5-4034-a5d6-f14d7aec0035}</uid>
                     <type>2</type>
                     <declaration>+EndTurn()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{ac6b9815-d55e-423a-9dca-84d1eeb17583}</uid>
+                    <uid>{87924315-ae99-425c-b728-92a4bbcbd480}</uid>
                     <type>2</type>
                     <declaration>+EndBattle()</declaration>
                    </MClassMember>
@@ -970,7 +970,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{225b1328-0b72-4b7e-86fe-e556c4adf77f}</uid>
+                    <uid>{1fd0d63b-f66c-4dba-9440-c283fdcbd9bf}</uid>
                     <type>1</type>
                     <declaration>-Card* [] Deck</declaration>
                    </MClassMember>

@@ -31,7 +31,6 @@ std::vector<std::vector<Card*>> board;
 
 
 
-
 /*
     Aktualnie glownie interfejsem by (moim zdaniem) warto bylo sie zajac,
     ale to jest git i version control, wiec mozna to robic rownolegle z innymi rzeczami.
@@ -102,9 +101,32 @@ int main() {
 
 
 
+
+
+    //test relatywnych pozycji
+    CustomDrawable sprite4(16);
+    sprite4.setTexture(card);
+    sprite4.setScale(0.05,0.05);
+    sprite4.setColor(sf::Color(100,100,100));
+    CustomDrawable test(15, &window);
+    test.setTexture(cardBackground);
+    test.setPosition(700,100);
+    test.addChild(&sprite4, 20, 25);
+
+    //Drawables.emplace_back(test);
+
+
+
     std::sort(Drawables.begin(), Drawables.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
 
-   std::sort(Cards.begin(), Cards.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
+    std::sort(Cards.begin(), Cards.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
+
+    for (auto obj: Drawables){
+        obj->setWindow(&window);
+    }
+
+
+
     // run the program as long as the window is open
     while (window.isOpen()) {
         // check all the window's events that were triggered since the last iteration of the loop
@@ -114,19 +136,19 @@ int main() {
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::MouseButtonPressed) {
-                            if(event.mouseButton.button == sf::Mouse::Left) {
-                                sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-                                std::cout << "Mouse clicked: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
-                                for (auto &r: Cards) {
-                                    if (r->contains(mouse_pos)){
-                                        r->setSelected(!r->isSelected());
-                                    }
-
-                                    }
-                                }
-                            }
-
+                if(event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                    std::cout << "Mouse clicked: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
+                    for (auto &r: Cards) {
+                        if (r->contains(mouse_pos)){
+                            r->setSelected(!r->isSelected());
                         }
+
+                    }
+                }
+            }
+
+        }
 
 
         for( auto obj: Cards){
@@ -143,7 +165,12 @@ int main() {
 
 
         for(auto obj: Drawables){
-            window.draw(*obj);
+            //nowa metoda rysowania
+            obj->Draw();
+
+            //stara metoda rysowania
+            //window.draw(*obj);
+
 
         }
         for(auto obj: Cards){
@@ -151,6 +178,11 @@ int main() {
             window.draw(*obj);
 
         }
+        //ruszanie obiektu (dla testu)
+        test.setPosition(test.getPosition().x-0.05,test.getPosition().y+0.02);
+
+        //rysowanie rekursywne obiektu oraz jego dzeci
+        test.Draw();
 
         window.display();
     }

@@ -31,7 +31,7 @@ public:
     sf::Color getSelectedColor(){
         return selectedColor;
     }
-    sf::Color setOrginalColor(sf::Color color){
+    void setOrginalColor(sf::Color color){
         orginalColor=color;
     }
 private:
