@@ -2,6 +2,9 @@
 bin/
 build/
 build/Desktop_Qt_6_11_1_MinGW_64_bit-Debugowa/
+build/Desktop_Qt_6_11_1_MinGW_64_bit-Debugowa
+.qtcreator
+test.pro.user
 /.vs
 .idea/
 CMakeSettings.json
