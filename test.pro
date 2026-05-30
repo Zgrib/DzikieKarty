@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
+    GameThread.cpp \
     Interface.cpp
 
 win32 {
@@ -19,7 +20,7 @@ win32 {
     LIBS += -L/usr/local/lib -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lsfml-network
     QMAKE_LFLAGS += -Wl,-rpath,/usr/local/lib
 }
-DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png resources/phCard.png \
+DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png resources/phCard.png resources/papyrus.ttf \
     dzikiekarty.qmodel
 
 QMAKE_POST_LINK += mkdir -p $$OUT_PWD/resources || true
