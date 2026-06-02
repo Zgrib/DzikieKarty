@@ -31,8 +31,8 @@ void GameLoop(sf::RenderWindow* window){
 
 
 
-
-        (*tempTest).setPosition( (*tempTest).getPosition().x-7, (*tempTest).getPosition().y+3 );
+        if(tempTest != nullptr)
+            tempTest->setPosition( tempTest->getPosition().x-7, tempTest->getPosition().y+3 );
         Sleep(0.3);
         //c1->setPosition( (*c1).getPosition().x+4, (*c1).getPosition().y-2 );
         //Sleep(0.2);
