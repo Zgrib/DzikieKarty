@@ -7,8 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-
-
+#include <unordered_map>
 #include <SFML/System/Thread.hpp>
 sf::Font font;
 
@@ -17,12 +16,17 @@ sf::Texture card;
 sf::Texture cardReverse;
 sf::Texture cardBackground;
 sf::Texture cardSlot;
-
+sf::Texture wilk;
+sf::Texture waz;
+sf::Texture wiewiorka;
+sf::Texture raven;
 
 
 #include "Rendering.h"
 #include "Interactive.h"
 #include "Card.h"
+#include "Deck.h"
+#include "TemplateDeck.h"
 #include "SFML/Graphics/Sprite.hpp"
 
 
@@ -57,7 +61,7 @@ int main() {
     Fonts* fonts = Fonts::getInstance();
 
     //temporary way of loading font, should be done in Interface.cpp probably
-    fonts->loadFont("../../../resources/papyrus.ttf");
+    fonts->loadFont("resources/papyrus.ttf");
 
 
     try{
@@ -105,8 +109,8 @@ int main() {
 
 
     //tworzenie karty
-    Card* c1 = BuildCard(2,5,1,BLOOD,placeholder,20);
-    c1->setPosition(100,100);
+    Card* c1 = BuildCard(2,5,1,BLOOD,raven,20);
+    c1->setPosition(100,00);
     Cards.emplace_back(c1);
     c1->window = &window;
     Cards.emplace_back(c1);
@@ -114,19 +118,33 @@ int main() {
 
 
 
-
-
-
     //test relatywnych pozycji
     CustomDrawable sprite4(16);
-    sprite4.setTexture(card);
-    sprite4.setScale(0.05,0.05);
+    sprite4.setTexture(raven);
+    sprite4.setScale(0.5,0.5);
     sprite4.setColor(sf::Color(100,100,100));
     CustomDrawable test(15, &window);
     test.setTexture(cardBackground);
     test.setPosition(700,100);
     test.addChild(&sprite4, 20, 25);
 
+    Deck player_deck= Deck(100,300);
+        player_deck.addCard(c1,Owner::Player);
+         player_deck.addCard(c1,Owner::Player);
+          player_deck.addCard(c1,Owner::Player);
+    std::unordered_map<std::string, sf::Texture> card_map;
+    card_map.emplace("wilk",card);
+    card_map.emplace("waz",waz);
+    card_map.emplace("wrona",raven);
+    TemplateDeck tmp_deck= TemplateDeck(card_map);
+
+    Card* wolf= tmp_deck.getRandomCard(CreatureType::WILK);
+    Card* raven_= tmp_deck.getRandomCard(CreatureType::WRONA);
+    Card* snake= tmp_deck.getRandomCard(CreatureType::WEZ);
+
+      Cards.emplace_back(wolf);
+      Cards.emplace_back(snake);
+     Cards.emplace_back(raven_);
 
     tempTest = &test;
 
@@ -213,8 +231,7 @@ int main() {
             obj->Draw();
 
         }
-
-
+        player_deck.render(window);
         window.draw(tmpTxt);
 
         window.display();

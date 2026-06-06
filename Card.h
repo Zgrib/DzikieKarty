@@ -6,7 +6,7 @@
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include <string>
-#endif // CARD_H
+
 enum CostType{
     BONES,
     BLOOD
@@ -98,10 +98,10 @@ Card* BuildCard(int _health, int _damage, int _cost, CostType _ct, sf::Texture _
 
 
     //to sie jako tekst renderuje??? xddd???
-    CustomDrawable* sprite = new CustomDrawable();
-    sprite->setTexture(_texture);
-    c->addChild(sprite);
-    sprite->setRelativePosition(10,30);
+//    CustomDrawable* sprite = new CustomDrawable();
+// sprite->setTexture(_texture);
+// c->addChild(sprite);
+//  sprite->setRelativePosition(10,30);
 
 
 
@@ -119,3 +119,4 @@ Card* BuildCard(int _health, int _damage, int _cost, CostType _ct, sf::Texture _
 }
 
 
+#endif // CARD_H

@@ -4,5 +4,10 @@
   <file>resources/placeholder.png</file>
   <file>resources/phCard.png</file>
   <file>resources/phSlot.png</file>
+    <file>resources/wilk2.png</file>
+      <file>resources/nietoperz.png</file>
+            <file>resources/waz.png</file>
+                  <file>resources/raven.png</file>
+                        <file>resources/wiewiorka.png</file>
 </qresource>
 </RCC>
