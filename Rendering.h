@@ -144,13 +144,22 @@ private:
 public:
     //text publiczny zeby nie reimplementowac szystkich funkcji textu
     sf::Text* text;
-    int* value;
+    int* value=nullptr;
     std::string before;
     std::string after;
+
+
+    CustomTextDrawable(){
+        text = new sf::Text();
+        text->setPosition(0,0);
+
+    }
+
 
     CustomTextDrawable(int* _value){
         value= _value;
         text = new sf::Text();
+        text->setPosition(0,0);
         //text->setFont(font);
         //text->setFillColor(sf::Color(0,0,0));
     }
@@ -160,12 +169,12 @@ public:
         if(parent!=nullptr){
             setPosition(parent->getPosition() + positionRelative);
             window = parent->window;
-            text->setPosition(getPosition());
-            text->setString(before + std::to_string( *value ) + after);
-
+            text->setPosition(getPosition() + positionRelative);
+            if(value != nullptr)
+                text->setString(before + std::to_string( *value ) + after);
         }
         if(window!=nullptr){
-            //window->draw(*this);
+            text->setPosition(getPosition());
             window->draw(*text);
 
         }

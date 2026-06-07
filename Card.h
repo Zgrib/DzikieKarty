@@ -107,15 +107,10 @@ Card* BuildCard(int _health, int _damage, int _cost, CostType _ct, sf::Texture _
 
 
 
-
-
-
-
-
-
-
-
     return c;
 }
 
+Card* cloneCard(const Card* c){
+    return BuildCard(c->health, c->damage, c->cost, c->costType_, *(c->sprite.getTexture()));
 
+}

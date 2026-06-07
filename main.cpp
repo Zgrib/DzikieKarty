@@ -10,7 +10,7 @@
 
 
 #include <SFML/System/Thread.hpp>
-sf::Font font;
+//sf::Font font;
 
 sf::Texture placeholder;
 sf::Texture card;
@@ -20,19 +20,24 @@ sf::Texture cardSlot;
 
 
 
+
 #include "Rendering.h"
+
+Fonts* fonts=nullptr;
+
 #include "Interactive.h"
 #include "Card.h"
 #include "SFML/Graphics/Sprite.hpp"
+#include "Player.h"
+#include "GameLog.h"
 
 
 
 
 ///lista wszystkich obiektow ktore mozna renderowac
 std::vector<CustomDrawable*> Drawables;
-
 std::vector<Card*> Cards;
-
+#include "LogThread.h"
 
 #include "Interface.cpp"
 
@@ -44,7 +49,6 @@ CustomDrawable * tempTest;
 
 #include "GameThread.cpp"
 
-
 Fonts* Fonts::instance = nullptr;
 std::mutex Fonts::mtx;
 
@@ -54,14 +58,16 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Dzikie Karty");
 
 
-    Fonts* fonts = Fonts::getInstance();
-
+    fonts = Fonts::getInstance();
     //temporary way of loading font, should be done in Interface.cpp probably
-    fonts->loadFont("../../../resources/papyrus.ttf");
+
 
 
     try{
         LoadTextures();
+
+        if (!fonts->font.loadFromFile("resources/papyrus.ttf") && !fonts->font.loadFromFile("../../../resources/papyrus.ttf"))
+            throw (std::string)"No font found";
     }
     catch(std::string string){
         std::cout<<string<<"\n";
@@ -71,9 +77,11 @@ int main() {
     DrawInterface(window);
 
     sf::Thread gLoop(&GameLoop, &window);
-
     gLoop.launch();
 
+
+    sf::Thread logLoop(&LogLoop, &window);
+    logLoop.launch();
 
 
 
@@ -84,30 +92,13 @@ int main() {
     Cards.emplace_back(&sprite);
     sprite.window = &window;
 
-    // Card sprite2(-1);
-    // sprite2.setTexture(card);
-    // sprite2.setScale(0.2,0.2);
-    // sprite2.setPosition(500,100);
-    // sprite2.setOrginalColor(sf::Color(200,100,0));
-    // Cards.emplace_back(&sprite2);
-    // sprite2.window = &window;
-
-
-    // Card sprite3(10);
-    // sprite3.setTexture(card);
-    // sprite3.setScale(0.2,0.2);
-    // sprite3.setPosition(100,150);
-    // sprite3.setOrginalColor(sf::Color(100,200,0));
-    // Cards.emplace_back(&sprite3);
-    // sprite3.window = &window;
 
 
 
 
     //tworzenie karty
-    Card* c1 = BuildCard(2,5,1,BLOOD,placeholder,20);
+    Card* c1 = BuildCard(2,5, 1, BLOOD, placeholder, 20);
     c1->setPosition(100,100);
-    Cards.emplace_back(c1);
     c1->window = &window;
     Cards.emplace_back(c1);
 
@@ -169,6 +160,8 @@ int main() {
                     for (auto &r: Cards) {
                         if (r->contains(mouse_pos)){
                             r->setSelected(!r->isSelected());
+                            //w przyszlosci bedziemy musieli chyba miec refrence do zaznaczonych obiektow
+                            //zeby mnzna z zaznaczonymi obiektami cos robic, np. przemieszczac albo usuwac/poswiecac
                         }
 
                     }
@@ -194,22 +187,14 @@ int main() {
         window.clear(sf::Color::Black);
 
 
-        //c1->Draw();
-
-
 
         for(auto obj: Drawables){
-            //nowa metoda rysowania
             obj->Draw();
 
-            //stara metoda rysowania
-            //window.draw(*obj);
 
 
         }
         for(auto obj: Cards){
-
-            //window.draw(*obj);
             obj->Draw();
 
         }

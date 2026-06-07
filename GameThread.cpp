@@ -4,6 +4,9 @@ void Sleep(float seconds){
     sf::sleep(sf::seconds(seconds));
 }
 
+sf::Vector2f lerp(sf::Vector2f start, sf::Vector2f end, float t) {
+    return start + t * (end - start);
+}
 
 
 /// funkcja ktora bedzie zajmowala sie cala logika gry, osobno od interfejsu
@@ -11,8 +14,6 @@ void Sleep(float seconds){
 /// aby cos spowolnic wystarczy dodac Sleep() i wywolac go z tego watku
 void GameLoop(sf::RenderWindow* window){
     auto tp = std::chrono::steady_clock::now();
-
-
 
 
 
@@ -25,6 +26,7 @@ void GameLoop(sf::RenderWindow* window){
             deltaTime = std::chrono::duration<float>(_tp - tp).count();
             tp = _tp;
         }
+
 
 
 
