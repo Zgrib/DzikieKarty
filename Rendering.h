@@ -58,9 +58,9 @@ class CustomDrawable:public sf::Sprite{
 
 private:
     int z;
-    std::vector<CustomDrawable*> children;
 
 protected:
+    std::vector<CustomDrawable*> children;
     sf::Vector2f positionRelative= sf::Vector2f(0,0);
 
 public:
@@ -87,12 +87,8 @@ public:
             setPosition(parent->getPosition() + positionRelative);
             window = parent->window;
         }
-
         if(window!=nullptr){
-
-
             window->draw(*this);
-
             for(auto child:children){
                 child->Draw();
             }
@@ -169,13 +165,17 @@ public:
         if(parent!=nullptr){
             setPosition(parent->getPosition() + positionRelative);
             window = parent->window;
-            text->setPosition(getPosition() + positionRelative);
-            if(value != nullptr)
-                text->setString(before + std::to_string( *value ) + after);
+            text->setPosition(getPosition()+positionRelative);
         }
+        if(value != nullptr)
+            text->setString(before + std::to_string( *value ) + after);
+
         if(window!=nullptr){
-            text->setPosition(getPosition());
+
             window->draw(*text);
+            for(auto child:children){
+                child->Draw();
+            }
 
         }
     }

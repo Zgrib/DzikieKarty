@@ -1,5 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
+#include <vector>
+#include <mutex>
+#include "Card.h"
 
 
 class Player{
@@ -9,6 +12,12 @@ private:
     static Player* instance;
     static std::mutex mtx;
     Player(){}
+
+    ~Player() {
+        for (auto* c : deck) delete c;
+        deck.clear();
+    }
+
 
 public:
     static Player* getInstance(){
@@ -31,14 +40,20 @@ public:
         //bedziemy mogli tasowac, usuwac z niego karty itd...
         std::vector<Card> cards;
         for(const auto card:deck){
-            cards.emplace_back(*cloneCard(card));
+            Card* tmp = cloneCard(card);
+            cards.emplace_back(*tmp);
+            delete tmp;
         }
         return cards;
 
     }
 
-    void removeCard(Card* c){
-        //...
+    void removeCard(Card* c) {
+        auto it = std::find(deck.begin(), deck.end(), c);
+        if (it != deck.end()) {
+            delete *it;
+            deck.erase(it);
+        }
     }
 
 

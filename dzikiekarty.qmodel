@@ -71,7 +71,7 @@
                          </base-DElement>
                          <object>{40957f2d-8a1d-42a1-908c-9a502950b2f2}</object>
                          <name>CustomDrawable</name>
-                         <pos>x:500;y:-240</pos>
+                         <pos>x:500;y:-245</pos>
                          <rect>x:-105;y:-50;w:210;h:100</rect>
                          <visual-role>0</visual-role>
                         </DObject>
@@ -546,7 +546,7 @@
                     </item>
                    </qlist>
                   </elements>
-                  <last-modified>1779706480666</last-modified>
+                  <last-modified>1780946738066</last-modified>
                   <toolbarid>General</toolbarid>
                  </MDiagram>
                 </base-MDiagram>
@@ -575,28 +575,28 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{08d05df6-a868-4248-abc6-a16bbb8aadb2}</uid>
+                    <uid>{c0a4e122-0503-4bd3-be88-3338966f6e50}</uid>
                     <type>1</type>
                     <declaration>-int health</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5b1a04c7-e405-4089-aa9a-4cd65c47dea0}</uid>
+                    <uid>{37566fa4-6f10-420b-9c90-dc729c587e99}</uid>
                     <type>1</type>
                     <declaration>-int damage</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{3964c706-0c82-4af1-b358-8563edcdd653}</uid>
+                    <uid>{7f169bd0-0e37-48a0-86d1-010d57e22a70}</uid>
                     <type>1</type>
                     <declaration>-int cost</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{1ab95da0-b0df-4ccc-b933-e761e87290a1}</uid>
+                    <uid>{86048f70-2972-4fae-8928-1760da0ac29c}</uid>
                     <type>1</type>
                     <declaration>-CostType costType_</declaration>
                    </MClassMember>
@@ -702,21 +702,21 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{397cf989-00f8-42fd-bc79-f942ab6bd129}</uid>
+                    <uid>{ffe05ff7-1ea2-4167-b89e-bfd25c65617b}</uid>
                     <type>1</type>
                     <declaration>-int z</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{728bdf6e-8f76-4e2f-a15e-d7d7b01336a0}</uid>
+                    <uid>{18f0dd4f-cfbe-450b-9d77-b1e79db93f5c}</uid>
                     <type>1</type>
                     <declaration>-vector&lt;CustomDrawable*&gt; children</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{a42f0e92-2d74-4a8c-9e52-84a1d7c45df0}</uid>
+                    <uid>{2adc3877-bb31-421c-a25d-e89598c32545}</uid>
                     <type>1</type>
                     <declaration>-void Drawhildern</declaration>
                    </MClassMember>
@@ -843,21 +843,21 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{3a2e76c4-2417-4e18-95bd-a3960a41d3c2}</uid>
+                    <uid>{0c213a88-41f9-4236-8f79-c4aea7923bcc}</uid>
                     <type>2</type>
                     <declaration>+PrepareBattle()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{7fbee059-8cf5-4034-a5d6-f14d7aec0035}</uid>
+                    <uid>{c67aea74-8146-493c-927a-52b77b0ec69c}</uid>
                     <type>2</type>
                     <declaration>+EndTurn()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{87924315-ae99-425c-b728-92a4bbcbd480}</uid>
+                    <uid>{838cb7fd-c274-4563-80ff-784e01b5525d}</uid>
                     <type>2</type>
                     <declaration>+EndBattle()</declaration>
                    </MClassMember>
@@ -970,7 +970,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{1fd0d63b-f66c-4dba-9440-c283fdcbd9bf}</uid>
+                    <uid>{4a406e3d-7a9e-4392-a807-1b0023f935be}</uid>
                     <type>1</type>
                     <declaration>-Card* [] Deck</declaration>
                    </MClassMember>
@@ -1032,7 +1032,7 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{930b3040-c59b-4c33-a093-6d06e146d737}</uid>
+                    <uid>{9dfa2ad9-2c2e-4b8c-937b-966200f5c761}</uid>
                     <type>1</type>
                     <declaration>&quot;Director risk of rain 2&quot;</declaration>
                    </MClassMember>
@@ -1116,35 +1116,35 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{d2e67657-a9ce-483c-8f43-83c5f6dd0025}</uid>
+                    <uid>{22428348-686a-491c-bc71-d2769c25fb2f}</uid>
                     <type>1</type>
                     <declaration>-bool selected</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{da743762-f0b2-44c6-a07b-a8fa3cdc82f8}</uid>
+                    <uid>{cdf17793-3340-4552-9b4f-515963d50e60}</uid>
                     <type>2</type>
                     <declaration>+void setSelected()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{b319c802-34f2-4651-a55f-62c185775110}</uid>
+                    <uid>{8e04ef8c-eee2-4e2a-ab55-6f53c64cddf9}</uid>
                     <type>2</type>
                     <declaration>+bool isSelected()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{0636d0ae-bda8-486f-a636-168b3e164957}</uid>
+                    <uid>{b9b29885-1c58-4aed-a71b-f6b1c864f8bf}</uid>
                     <type>2</type>
                     <declaration>-bool contains(mouse pos)</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{2744ef96-32f7-4c03-aa2b-4e901f414912}</uid>
+                    <uid>{62471ee6-9640-4637-82fd-7a75b1cafae4}</uid>
                     <type>1</type>
                     <declaration>-bool selectable</declaration>
                    </MClassMember>
@@ -1355,21 +1355,21 @@
                  <qlist>
                   <item>
                    <MClassMember>
-                    <uid>{83ece7b2-9066-4996-8ccf-e9039c21ef72}</uid>
+                    <uid>{3ebafc74-9828-456c-928e-760769115e93}</uid>
                     <type>1</type>
                     <declaration>-int difficulty</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{5fcd1370-174f-468e-a1f6-f466f24db83a}</uid>
+                    <uid>{5c03d2ae-38f7-4100-b0ea-e02f44b2e9e4}</uid>
                     <type>2</type>
                     <declaration>+StartBattle()</declaration>
                    </MClassMember>
                   </item>
                   <item>
                    <MClassMember>
-                    <uid>{560b5f62-588c-4ef6-a89f-af9f3ceeca7f}</uid>
+                    <uid>{3380b06d-1142-4ddc-991e-6c81db541381}</uid>
                     <type>2</type>
                     <declaration>+ChangeScreen()</declaration>
                    </MClassMember>

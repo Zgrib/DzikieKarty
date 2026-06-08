@@ -1,8 +1,8 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 #include <vector>
 #include <algorithm>
 #include <random>
-#include <SFML/Graphics.hpp>
 #include "Card.h" // zakładam że zawiera definicję Card i Interactive
 
 enum class Owner { Player, Enemy };

@@ -5,7 +5,8 @@ CONFIG -= qt
 
 SOURCES += main.cpp \
     GameThread.cpp \
-    Interface.cpp
+    Interface.cpp \
+    LogThread.cpp
 
 win32 {
     INCLUDEPATH += "C:/SFML-2.5.1/include"
@@ -28,6 +29,7 @@ QMAKE_POST_LINK += cp -r $$PWD/resources/* $$OUT_PWD/resources || true
 RESOURCES += resources.qrc
 
 HEADERS += \
+    BattleEngine.h \
     Card.h \
     Deck.h \
     GameLog.h \

@@ -24,6 +24,7 @@ sf::Texture raven;
 
 #include "Rendering.h"
 
+const float TIMESTEP = 0.1;
 Fonts* fonts=nullptr;
 
 #include "Interactive.h"
@@ -33,7 +34,7 @@ Fonts* fonts=nullptr;
 #include "SFML/Graphics/Sprite.hpp"
 #include "Player.h"
 #include "GameLog.h"
-
+#include "BattleEngine.h"
 
 
 
@@ -41,13 +42,9 @@ Fonts* fonts=nullptr;
 std::vector<CustomDrawable*> Drawables;
 
 std::vector<Card*> Cards;
-#include "LogThread.h"
+#include "LogThread.cpp"
 
 #include "Interface.cpp"
-
-//może lepiej aby to były sloty na kartę a nie po prostu karty???
-//to chyba zależy, tak też można
-std::vector<std::vector<Card*>> board;
 
 CustomDrawable * tempTest;
 
@@ -61,6 +58,7 @@ std::mutex Fonts::mtx;
 int main() {
     // create the window
     sf::RenderWindow window(sf::VideoMode(1200, 800), "Dzikie Karty");
+
 
 
     Fonts* fonts = Fonts::getInstance();
@@ -96,53 +94,20 @@ int main() {
     Cards.emplace_back(&sprite);
     sprite.window = &window;
 
-    // Card sprite2(-1);
-    // sprite2.setTexture(card);
-    // sprite2.setScale(0.2,0.2);
-    // sprite2.setPosition(500,100);
-    // sprite2.setOrginalColor(sf::Color(200,100,0));
-    // Cards.emplace_back(&sprite2);
-    // sprite2.window = &window;
-
-
-    // Card sprite3(10);
-    // sprite3.setTexture(card);
-    // sprite3.setScale(0.2,0.2);
-    // sprite3.setPosition(100,150);
-    // sprite3.setOrginalColor(sf::Color(100,200,0));
-    // Cards.emplace_back(&sprite3);
-    // sprite3.window = &window;
-
-
 
 
     //tworzenie karty
-    Card* c1 = BuildCard(2,5,1,BLOOD,raven,20);
-    c1->setPosition(100,00);
+    Card* c1 = BuildCard(2,3,2,BLOOD,raven,20);
+    c1->setPosition(100,200);
+    c1->setWindow(&window);
     Cards.emplace_back(c1);
-    c1->window = &window;
-    Cards.emplace_back(c1);
 
 
-
-
-
-
-
-    //test relatywnych pozycji
-    CustomDrawable sprite4(16);
-    sprite4.setTexture(raven);
-    sprite4.setScale(0.5,0.5);
-    sprite4.setColor(sf::Color(100,100,100));
-    CustomDrawable test(15, &window);
-    test.setTexture(cardBackground);
-    test.setPosition(700,100);
-    test.addChild(&sprite4, 20, 25);
 
     Deck player_deck= Deck(100,300);
         player_deck.addCard(c1,Owner::Player);
-         player_deck.addCard(c1,Owner::Player);
-          player_deck.addCard(c1,Owner::Player);
+        player_deck.addCard(c1,Owner::Player);
+        player_deck.addCard(c1,Owner::Player);
     std::unordered_map<std::string, sf::Texture> card_map;
     card_map.emplace("wilk",card);
     card_map.emplace("waz",waz);
@@ -153,15 +118,12 @@ int main() {
     Card* raven_= tmp_deck.getRandomCard(CreatureType::WRONA);
     Card* snake= tmp_deck.getRandomCard(CreatureType::WEZ);
 
-      Cards.emplace_back(wolf);
-      Cards.emplace_back(snake);
-     Cards.emplace_back(raven_);
+    Cards.emplace_back(wolf);
+    Cards.emplace_back(snake);
+    Cards.emplace_back(raven_);
 
-    tempTest = &test;
-
-    Drawables.emplace_back(&test);
-
-
+    // tempTest = &test;
+    // Drawables.emplace_back(&test);
 
 
 
@@ -221,30 +183,20 @@ int main() {
         }
 
 
-        // clear the window with black color
-        window.clear(sf::Color::Black);
 
-
-        //c1->Draw();
-
+        window.clear(sf::Color::White);
 
 
         for(auto obj: Drawables){
-            //nowa metoda rysowania
             obj->Draw();
-
-            //stara metoda rysowania
-            //window.draw(*obj);
-
-
         }
         for(auto obj: Cards){
-
-            //window.draw(*obj);
             obj->Draw();
-
         }
-        player_deck.render(window);
+
+
+        //rysowanie w ten sposob kart rysuje jednynie ich tło!!
+        //player_deck.render(window);
         window.draw(tmpTxt);
 
         window.display();

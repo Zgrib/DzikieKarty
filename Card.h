@@ -14,6 +14,7 @@ enum CostType{
 
 class Card: public Interactive{
 public:
+    sf::Texture spriteTexture;
     sf::Sprite sprite;
     sf::Texture background;
     sf::Texture reverse;
@@ -59,66 +60,62 @@ public:
 };
 
 
-Card* BuildCard(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, int z=0){
+Card* BuildCard(int _damage, int _health, int _cost, CostType _ct, const sf::Texture& _texture, int z=0){
     Fonts* fonts = Fonts::getInstance();
-    Card* c = new  Card(_health, _damage, _cost, _ct, _texture, z);
+    Card* c = new Card(_health, _damage, _cost, _ct, _texture, z);
     c->background = cardBackground;
     c->setTexture(c->background);
 
 
+    c->spriteTexture = _texture;
+    CustomDrawable* cardSprite = new CustomDrawable();
+    cardSprite->setTexture(c->spriteTexture);
+    cardSprite->setRelativePosition(8, 36);
+    cardSprite->setScale(0.89,0.89);
+    c->addChild(cardSprite);
+
+
+    // std::cout << "spriteTexture size: " << c->spriteTexture.getSize().x << "x" << c->spriteTexture.getSize().y << "\n";
+    // std::cout << "cardSprite texture ptr: " << cardSprite->getTexture() << "\n";
+    // std::cout << "cardSprite textureRect: " << cardSprite->getTextureRect().width << "x" << cardSprite->getTextureRect().height << "\n";
+
+
+
+
     CustomTextDrawable* health = new CustomTextDrawable(&(c->health));
-    health->setRelativePosition(5,80);
-    c->addChild(health);
+    health->setRelativePosition(45, 70);
     health->text->setCharacterSize(24);
     health->text->setFillColor(sf::Color::Black);
     health->text->setFont(fonts->font);
     health->text->setOutlineThickness(1);
-
+    c->addChild(health);
 
     CustomTextDrawable* damage = new CustomTextDrawable(&(c->damage));
-    damage->setRelativePosition(65,80);
-    c->addChild(damage);
+    damage->setRelativePosition(7, 70);
     damage->text->setCharacterSize(24);
     damage->text->setFillColor(sf::Color::Black);
     damage->text->setFont(fonts->font);
     damage->text->setOutlineThickness(1);
+    c->addChild(damage);
 
     CustomTextDrawable* cost = new CustomTextDrawable(&(c->cost));
-    cost->setRelativePosition(15,20);
-    c->addChild(cost);
-    cost->text->setCharacterSize(18);
-    if(_ct==CostType::BLOOD)
-        cost->after="Blood";
-    else
-        cost->after="Bones";
+    cost->setRelativePosition(30, 15);
+    cost->text->setCharacterSize(12);
     cost->text->setFillColor(sf::Color::Black);
     cost->text->setFont(fonts->font);
     cost->text->setOutlineThickness(1);
+    c->addChild(cost);
 
-
-
-    //to sie jako tekst renderuje??? xddd???
-//    CustomDrawable* sprite = new CustomDrawable();
-// sprite->setTexture(_texture);
-// c->addChild(sprite);
-//  sprite->setRelativePosition(10,30);
-
-
-
-
-
-
-
-
-
-
-
-
+    if(_ct == CostType::BLOOD)
+        cost->after = " Blood";
+    else
+        cost->after = " Bones";
 
     return c;
+
 }
 
 Card* cloneCard(const Card* c){
     return BuildCard(c->health, c->damage, c->cost, c->costType_, *(c->sprite.getTexture()));
-
+}
 #endif // CARD_H
