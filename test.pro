@@ -29,9 +29,11 @@ RESOURCES += resources.qrc
 
 HEADERS += \
     Card.h \
+    Deck.h \
     GameLog.h \
     Interactive.h \
     LogThread.h \
     Player.h \
-    Rendering.h
+    Rendering.h \
+    TemplateDeck.h
 

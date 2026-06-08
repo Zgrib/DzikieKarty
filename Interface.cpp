@@ -40,6 +40,7 @@ void DrawInterface(sf::RenderWindow& window){
 }
 
 
+
 void LoadTextures(){
     try{
         if (!card.loadFromFile("resources/karta.png"))
@@ -55,8 +56,19 @@ void LoadTextures(){
         }
         if (!cardSlot.loadFromFile("resources/phSlot.png")&& !cardSlot.loadFromFile("../../../resources/phSlot.png")) {
             throw (std::string)"Could not load texture !";
+}
+            if (!wilk.loadFromFile("resources/wilk2.png")&& !wilk.loadFromFile("../../../resources/wilk2.png")) {
+                throw (std::string)"Could not load texture !";
         }
-
+            if (!waz.loadFromFile("resources/waz.png")&& !waz.loadFromFile("../../../resources/waz.png")) {
+                throw (std::string)"Could not load texture !";
+    }
+            if (!raven.loadFromFile("resources/raven.png")&& !raven.loadFromFile("../../../resources/raven.png")) {
+                throw (std::string)"Could not load texture !";
+    }
+            if (!wiewiorka.loadFromFile("resources/wiewiorka.png")&& !wiewiorka.loadFromFile("../../../resources/wiewiorka.png")) {
+                throw (std::string)"Could not load texture !";
+    }
     }
     catch(...){ //not the most elegant solution
         try{
@@ -74,6 +86,10 @@ void LoadTextures(){
                 if (!cardSlot.loadFromFile("../../../resources/phSlot.png")) {
                     throw (std::string)"Could not load texture !";
                 }
+//                if (!wilk.loadFromFile("../../../resources/wilk2.png")) {
+//                    throw (std::string)"Could not load texture !";
+//                }
+
         }
         catch(...){
             std::cerr<<"Could not load texture !\n";
