@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
+    Button.cpp \
     GameThread.cpp \
     Interface.cpp \
     LogThread.cpp
@@ -30,9 +31,11 @@ RESOURCES += resources.qrc
 
 HEADERS += \
     BattleEngine.h \
+    Button.h \
     Card.h \
     Deck.h \
     GameLog.h \
+    GameManager.h \
     Interactive.h \
     LogThread.h \
     Player.h \

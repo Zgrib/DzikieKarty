@@ -35,6 +35,7 @@ Fonts* fonts=nullptr;
 #include "Player.h"
 #include "GameLog.h"
 #include "BattleEngine.h"
+#include "Button.h"
 
 
 
@@ -122,6 +123,19 @@ int main() {
     Cards.emplace_back(snake);
     Cards.emplace_back(raven_);
 
+
+    // TEST PRZYCISKU
+    Button* Button1 = new Button(100, placeholder, fonts->font, "ELO");
+    Button1->setPosition(500, 400);
+
+    Button1->setOnClickAction([]() {
+        std::cout << "COS SE ROBIE KURWA TEN" << std::endl;
+    });
+
+    Drawables.push_back(Button1);
+    // TEST PRZYCISKU
+
+
     // tempTest = &test;
     // Drawables.emplace_back(&test);
 
@@ -182,7 +196,11 @@ int main() {
             }
         }
 
-
+        // TEST PRZYCISKU
+        sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
+        bool isLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+        Button1->update(currentMousePos, isLeftPressed);
+        // TEST PRZYCISKU
 
         window.clear(sf::Color::White);
 

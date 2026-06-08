@@ -67,8 +67,8 @@ void LoadTextures(){
                 throw (std::string)"Could not load texture !";
             }
         }
-        if (!wilk.loadFromFile("resources/wilk2.png")) {
-            if (!wilk.loadFromFile("../../../resources/wilk2.png")) {
+        if (!wilk.loadFromFile("resources/wilk.png")) {
+            if (!wilk.loadFromFile("../../../resources/wilk.png")) {
                 throw (std::string)"Could not load texture !";
             }
         }

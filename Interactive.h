@@ -1,7 +1,11 @@
+#pragma once
+
 #ifndef INTERACTIVE_H
 #define INTERACTIVE_H
 
 #endif // INTERACTIVE_H
+
+#include "Rendering.h"
 
 class Interactive: public CustomDrawable{
 public:
