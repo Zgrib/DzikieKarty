@@ -58,7 +58,7 @@ std::mutex Fonts::mtx;
 
 int main() {
     // create the window
-    sf::RenderWindow window(sf::VideoMode(1200, 800), "Dzikie Karty");
+    sf::RenderWindow window(sf::VideoMode(1920, 1800), "Dzikie Karty");
 
 
 
@@ -99,29 +99,24 @@ int main() {
 
     //tworzenie karty
     Card* c1 = BuildCard(2,3,2,BLOOD,raven,20);
-    c1->setPosition(100,200);
+    c1->setPosition(300,200);
     c1->setWindow(&window);
     Cards.emplace_back(c1);
+    Card* c2 = BuildCard(3,1,2,BLOOD,wilk,20);
+    c2->setPosition(500,200);
+    c2->setWindow(&window);
+    Cards.emplace_back(c2);
+    Card* c3 = BuildCard(2,3,2,BLOOD,raven,20);
+    c3->setPosition(1000,200);
+    c3->setWindow(&window);
+    Cards.emplace_back(c3);
+
+
+    Deck player_deck=Deck(480,720,300,10);
 
 
 
-    Deck player_deck= Deck(100,300);
-        player_deck.addCard(c1,Owner::Player);
-        player_deck.addCard(c1,Owner::Player);
-        player_deck.addCard(c1,Owner::Player);
-    std::unordered_map<std::string, sf::Texture> card_map;
-    card_map.emplace("wilk",card);
-    card_map.emplace("waz",waz);
-    card_map.emplace("wrona",raven);
-    TemplateDeck tmp_deck= TemplateDeck(card_map);
 
-    Card* wolf= tmp_deck.getRandomCard(CreatureType::WILK);
-    Card* raven_= tmp_deck.getRandomCard(CreatureType::WRONA);
-    Card* snake= tmp_deck.getRandomCard(CreatureType::WEZ);
-
-    Cards.emplace_back(wolf);
-    Cards.emplace_back(snake);
-    Cards.emplace_back(raven_);
 
 
     // TEST PRZYCISKU
@@ -156,7 +151,9 @@ int main() {
     for (auto obj: Drawables){
         obj->setWindow(&window);
     }
-
+    for (auto obj: Cards){
+        obj->setWindow(&window);
+    }
 
 
     // run the program as long as the window is open
@@ -211,10 +208,10 @@ int main() {
         for(auto obj: Cards){
             obj->Draw();
         }
-
+        player_deck.render(window);
 
         //rysowanie w ten sposob kart rysuje jednynie ich tło!!
-        //player_deck.render(window);
+
         window.draw(tmpTxt);
 
         window.display();
