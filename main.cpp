@@ -129,7 +129,7 @@ int main() {
     Button1->setPosition(500, 400);
 
     Button1->setOnClickAction([]() {
-        std::cout << "COS SE ROBIE KURWA TEN" << std::endl;
+        std::cout << "COS SE ROBIE Kurde TEN" << std::endl;
     });
 
     Drawables.push_back(Button1);
@@ -142,7 +142,7 @@ int main() {
 
 
     sf::Text tmpTxt;
-    tmpTxt.setString("test test test cwel lorem ipsum");
+    tmpTxt.setString("test test test więzienny homoseksualista lorem ipsum");
     tmpTxt.setPosition(200,200);
     tmpTxt.setCharacterSize(24);
     tmpTxt.setFillColor(sf::Color::White);
