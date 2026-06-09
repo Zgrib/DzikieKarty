@@ -142,7 +142,7 @@ int main() {
 
 
     sf::Text tmpTxt;
-    tmpTxt.setString("test test test więzienny homoseksualista lorem ipsum");
+    tmpTxt.setString("test test test lorem ipsum");
     tmpTxt.setPosition(200,200);
     tmpTxt.setCharacterSize(24);
     tmpTxt.setFillColor(sf::Color::White);
