@@ -51,8 +51,10 @@ public:
 
     // Render wszystkich kart (najpierw enemy potem player żeby player był na wierzchu)
     void render(sf::RenderWindow& window){
-        for(auto* c : enemyDeck) if(c) window.draw(*c);
-        for(auto* c : playerDeck) if(c) window.draw(*c);
+        for(auto* c : enemyDeck){
+            c->Draw();
+        }
+        for(auto* c : playerDeck){ c->Draw();}
     }
 
     // Obsługa zdarzenia myszy: klik = toggle selected; pod uwagę bierzemy tylko kliknięcia LMB

@@ -9,7 +9,7 @@
 
 class Interactive: public CustomDrawable{
 public:
-    Interactive(int z): CustomDrawable(z){}
+    Interactive(int z,sf::RenderWindow* _window): CustomDrawable(z,_window){}
     bool contains(sf::Vector2i pos){
         sf::FloatRect rectangle_bounds = getGlobalBounds();
         if (pos.x < rectangle_bounds.left)

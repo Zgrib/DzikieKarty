@@ -4,10 +4,11 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
-    Button.cpp \
     GameThread.cpp \
     Interface.cpp \
-    LogThread.cpp
+    LogThread.cpp \
+    button.cpp \
+    context.cpp
 
 win32 {
     INCLUDEPATH += "C:/SFML-2.5.1/include"
@@ -31,7 +32,6 @@ RESOURCES += resources.qrc
 
 HEADERS += \
     BattleEngine.h \
-    Button.h \
     Card.h \
     Deck.h \
     GameLog.h \
@@ -40,5 +40,7 @@ HEADERS += \
     LogThread.h \
     Player.h \
     Rendering.h \
-    TemplateDeck.h
+    TemplateDeck.h \
+    button.h \
+    context.h
 

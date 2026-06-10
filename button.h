@@ -6,9 +6,7 @@
 #endif // BUTTON_H
 
 #include "Interactive.h"
-#include <SFML/Graphics.hpp>
-#include <functional> // Do callbacków (uniwersalnych akcji)
-#include <string>
+
 
 class Button : public Interactive
 {
@@ -27,7 +25,7 @@ private:
 
 public:
     // Konstruktor: przyjmuje 'z', teksturę tła, czcionkę i tekst do wyświetlenia
-    Button(int z, const sf::Texture& texture, const sf::Font& font, const std::string& text);
+    Button(int z, const sf::Texture& texture, const sf::Font& font, const std::string& text,sf::RenderWindow *_window);
 
     // Przypisanie akcji do przycisku
     void setOnClickAction(std::function<void()> action);
