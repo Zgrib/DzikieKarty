@@ -1,7 +1,7 @@
-#include "Button.h"
+#include "button.h"
 
-Button::Button(int z, const sf::Texture& texture, const sf::Font& font, const std::string& text)
-    : Interactive(z), state(Normal)
+Button::Button(int z, const sf::Texture& texture, const sf::Font& font, const std::string& text,sf::RenderWindow *_window)
+    : Interactive(z,_window), state(Normal)
 {
     // 1. Ustawienie tekstury (CustomDrawable dziedziczy po sf::Sprite)
     this->setTexture(texture);
@@ -73,6 +73,8 @@ void Button::Draw()
     {
         sf::RenderStates states;
         states.transform = this->getTransform(); // Tekst przesuwa się razem z tłem
+        buttonText.setScale(0.7,0.7);
         window->draw(buttonText, states);
+
     }
 }
