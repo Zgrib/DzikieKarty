@@ -10,5 +10,11 @@
         <file>resources/wiewiorka.png</file>
         <file>resources/papyrus.ttf</file>
         <file>resources/wilk.png</file>
+        <file>resources/Button.png</file>
+        <file>resources/Button_pressed.png</file>
+        <file>resources/chat.png</file>
+        <file>resources/Deck.png</file>
+        <file>resources/Waga.png</file>
+        <file>resources/Battleground.png</file>
     </qresource>
 </RCC>

@@ -18,7 +18,9 @@ void Context::load_textures() {
         {"squirel",   "resources/wiewiorka.png"},
         {"raven",       "resources/raven.png"},
         {"Battleground","resources/Battleground.png"},
-        {"deck",       "resources/Deck.png"}
+        {"deck",       "resources/Deck.png"},
+        {"button",       "resources/Button.png"},
+        {"button_pressed",       "resources/Button_pressed.png"}
     };
 
     for (auto &p : files) {
@@ -151,13 +153,13 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
 }
 
 void Context::start_main_menu(sf::RenderWindow &window){
-        Button* btn_start=new Button(5,textures_["phSlot"],fonts_["papyrus"],"START",&window);
+        Button* btn_start=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"START",&window);
         btn_start->setPosition(200,200);
         btn_start->setOnClickAction([this](){scene_=1;});
         menu_buttons_.emplace_back(btn_start);
 
 
-        Button* btn_quit=new Button(5,textures_["phSlot"],fonts_["papyrus"],"WYJDZ",&window);
+        Button* btn_quit=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
         btn_quit->setPosition(500,200);
         btn_quit->setOnClickAction([&window](){std::cout<<"Guzik"<<std::endl; window.close();});
         menu_buttons_.emplace_back(btn_quit);
@@ -197,13 +199,13 @@ void Context::start_battleground(sf::RenderWindow &window){
     CustomDrawable* rightPanel= new CustomDrawable(-8);
     CustomDrawable* bottomPanel = new CustomDrawable(-8);
 
-    Button* quit = new Button(5,textures_["phSlot"],fonts_["papyrus"],"WYJDZ",&window);
+    Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
     quit->setPosition(1800,50);
     quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
     battle_buttons_.emplace_back(quit);
     std::cout<<"test test test\n";
 
-    Button* endTurn = new Button(5,textures_["phSlot"],fonts_["papyrus"],"Zakoncz ture",&window);
+    Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
     endTurn->setPosition(200,500);
     endTurn->setOnClickAction([this](){
         std::cout << "Koniec tury! Odpalam silnik...\n";
