@@ -5,6 +5,17 @@ int main(){
     DzikieKarty.start_context();
     return 0;
 }
+/*  TODO: (sam sobie pisze)
+ *  dokonczyc zagrywanie kart (wyrysowywanie i generalnie strona hand / deck)
+ *  sprawdzic czy reszta logoki bedzie wtedy dzialac
+ *  szale i sprawdzanie
+ *
+ *
+ *
+ *
+ * /
+
+
 
 //#include <iostream>
 //#include <SFML/Window.hpp>
