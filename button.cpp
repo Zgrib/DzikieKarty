@@ -9,8 +9,8 @@ Button::Button(int z, const sf::Texture& texNormal, const sf::Texture& texPresse
     this->setTexture(*normalTexture);
 
     // presety do przyceimniania
-    normalColor = sf::Color(255, 255, 255);
-    hoverColor = sf::Color(200, 200, 200);
+    normalColor = sf::Color(229,161,80);
+    hoverColor = sf::Color(150, 100, 50);
     this->setColor(normalColor);
 
 
