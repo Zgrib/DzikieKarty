@@ -23,6 +23,7 @@ private:
 
 
 public:
+
     GameManager(sf::RenderWindow& window);
     ~GameManager();
 
@@ -32,11 +33,15 @@ public:
     // Wywoływane wewnątrz pętli rysowania w Context::battleground
     void drawBoardElements();
 
+    void cleanupDeadCards();
+
     Card* BuildCard(int _damage, int _health, int _cost, CostType _ct,
                     const sf::Texture& _texture, const sf::Texture& _background,
                     const sf::Font& _font, sf::RenderWindow &window, int z);
 
     Card* cloneCard(const Card* c);
+
+    BattleEngine& getBattleEngine();
 
     // Gettery
     GameBoard* getBoard() const;

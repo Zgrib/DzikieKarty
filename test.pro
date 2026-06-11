@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
+    BattleEngine.cpp \
     Card.cpp \
     GameManager.cpp \
     GameThread.cpp \
@@ -11,6 +12,7 @@ SOURCES += main.cpp \
     LogThread.cpp \
     button.cpp \
     context.cpp \
+    enemyai.cpp \
     gameboard.cpp
 
 win32 {
@@ -46,5 +48,6 @@ HEADERS += \
     TemplateDeck.h \
     button.h \
     context.h \
+    enemyai.h \
     gameboard.h
 

@@ -1,3 +1,4 @@
+#include <algorithm> // Wymagane dla std::remove_if
 #include "GameManager.h"
 
 GameManager::GameManager(sf::RenderWindow& window)
@@ -13,10 +14,36 @@ GameManager::GameManager(sf::RenderWindow& window)
     sf::FloatRect boardBounds(boardX, boardY, boardWidth, boardHeight);
 
     board_ = new GameBoard(boardBounds, 2, 4);
+
+    battleEngine_.setGM(this);
 }
 
 GameManager::~GameManager() {
     delete board_;
+}
+
+
+void GameManager::cleanupDeadCards() {
+
+    for (Card* card : deployedCards_) {
+        if (card != nullptr && card->getHealth() <= 0) {
+            delete card;
+        }
+    }
+
+    deployedCards_.erase(
+        std::remove_if(deployedCards_.begin(), deployedCards_.end(),
+               [](Card* card)
+                    {
+                       return card == nullptr || card->getHealth() <= 0;
+                    }
+               ),
+            deployedCards_.end()
+        );
+}
+
+BattleEngine& GameManager::getBattleEngine(){
+    return battleEngine_;
 }
 
 bool GameManager::placeCard(Card* card, int row, int col) {
@@ -26,6 +53,8 @@ bool GameManager::placeCard(Card* card, int row, int col) {
 
     if (!battleEngine_.isSlotEmpty(row, col))
         return false;
+
+
 
     // 2. Pobranie dopasowanej pozycji z GameBoard
     sf::Vector2f targetPos = board_->getSlotPosition(row, col);
@@ -48,7 +77,7 @@ bool GameManager::placeCard(Card* card, int row, int col) {
     }
 
     card->setPosition(targetPos.x + paddingX, finalY);
-
+    battleEngine_.setCardInSlot(card, row, col);
     // 3. Zapisujemy w wektorze obiektów do wyrenderowania
     deployedCards_.push_back(card);
 

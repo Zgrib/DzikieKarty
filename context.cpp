@@ -77,10 +77,10 @@ void Context::start_context() {
 
     //manager test!!
     Card* card = manager_->BuildCard(2,5,2,CostType::BLOOD,textures_["raven"],textures_["card"],fonts_["papyrus"],window,0);
-    manager_->placeCard(card,0,1);
+    manager_->placeCard(card,0,0);
 
     Card* card3 = manager_->BuildCard(3,2,2,CostType::BLOOD,textures_["wolf"],textures_["card"],fonts_["papyrus"],window,0);
-    manager_->placeCard(card3,0,0);
+    manager_->placeCard(card3,1,0);
 
     Card* card1 = manager_->BuildCard(1,3,1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card1,1,2);
@@ -96,7 +96,9 @@ void Context::start_context() {
 }
 
 void Context::window_loop(sf::RenderWindow &window){
+    sf::Clock deltaClock;
     while (window.isOpen()) {
+        float deltaTime = deltaClock.restart().asSeconds();
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         Context::events_loop(window,event);
@@ -109,6 +111,7 @@ void Context::window_loop(sf::RenderWindow &window){
             Context::main_menu(window);    
         }
         if(scene_==1){
+            manager_->getBattleEngine().update(deltaTime);
             Context::battleground(window);
             manager_->drawBoardElements();
         }
@@ -202,9 +205,12 @@ void Context::start_battleground(sf::RenderWindow &window){
 
     Button* endTurn = new Button(5,textures_["phSlot"],fonts_["papyrus"],"Zakoncz ture",&window);
     endTurn->setPosition(200,500);
-    endTurn->setOnClickAction([](){std::cout<<"Koniec tury!/n";});//and maybe do other stuff?
+    endTurn->setOnClickAction([this](){
+        std::cout << "Koniec tury! Odpalam silnik...\n";
+        manager_->getBattleEngine().EndTurn();
+    });
     battle_buttons_.emplace_back(endTurn);
-
+    std::cout << "Test/n";
 
     background->setTexture(textures_["Battleground"]);
     background->setColor(sf::Color(200,141,60));

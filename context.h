@@ -6,6 +6,8 @@
 #include <SFML/Graphics.hpp>
 #include "button.h"
 #include "GameManager.h"
+
+
 class Context
 {
 private:
@@ -29,6 +31,8 @@ private:
     void battleground(sf::RenderWindow &window);
 
     GameManager* manager_;
+
+
 public:
     Context();
     void start_context();
