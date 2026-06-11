@@ -17,7 +17,8 @@ void Context::load_textures() {
         {"snake",         "resources/waz.png"},
         {"squirel",   "resources/wiewiorka.png"},
         {"raven",       "resources/raven.png"},
-        {"Battleground","resources/Battleground.png"}
+        {"Battleground","resources/Battleground.png"},
+        {"deck",       "resources/Deck.png"}
     };
 
     for (auto &p : files) {
@@ -66,10 +67,11 @@ void Context::start_context() {
         return;
     }
 
-sf::RenderWindow window(sf::VideoMode(1920, 1800), "Dzikie Karty");
-window.setFramerateLimit(60);
-Context::start_main_menu(window);
-Context::window_loop(window);
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "Dzikie Karty");
+    window.setFramerateLimit(60);
+    Context::start_main_menu(window);
+    Context::start_battleground(window);
+    Context::window_loop(window);
 
 }
 
@@ -83,9 +85,12 @@ void Context::window_loop(sf::RenderWindow &window){
         window.clear(sf::Color::Red);
 
         // draw everything here...
-            if(scene_== 0){
-            Context::main_menu(window);
-}
+        if(scene_== 0){
+            Context::main_menu(window);    
+        }
+        if(scene_==1){
+            Context::battleground(window);
+        }
 
         // end the current frame
         window.display();
@@ -95,48 +100,121 @@ void Context::window_loop(sf::RenderWindow &window){
 void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
     while (window.pollEvent(event)) {
         // "close requested" event: we close the window
-        if (event.type == sf::Event::Closed)
+        if (event.type == sf::Event::Closed){
             window.close();
-//        if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-//            window.close();
-//        for(Button* ptr: menu_buttons_){
-//            ptr->update(sf::Vector2i(0,0),false);
-//        }
-//                    if (event.type == sf::Event::MouseButtonPressed) {
-//                        if(event.mouseButton.button == sf::Mouse::Left) {
-//                            sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-//                            for(Button* ptr: menu_buttons_){
-//                                ptr->update(mouse_pos,true);
-//                            }
-//                        }
+        }
 
-                        //        sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
-                        //        bool isLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-                        //        Button1->update(currentMousePos, isLeftPressed);
-                        //        // TEST PRZYCISKU
-//    }
-}
+
+/*       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+           window.close();
+       for(Button* ptr: menu_buttons_){
+           ptr->update(sf::Vector2i(0,0),false);
+       }
+                   if (event.type == sf::Event::MouseButtonPressed) {
+                       if(event.mouseButton.button == sf::Mouse::Left) {
+                           sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
+                           for(Button* ptr: menu_buttons_){
+                               ptr->update(mouse_pos,true);
+                           }
+                       }
+
+                               sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
+                               bool isLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+                               Button1->update(currentMousePos, isLeftPressed);
+                               // TEST PRZYCISKU
+   }*/
+    }
 }
 
 void Context::start_main_menu(sf::RenderWindow &window){
         Button* btn_start=new Button(5,textures_["phSlot"],fonts_["papyrus"],"START",&window);
         btn_start->setPosition(200,200);
-                btn_start->setOnClickAction([this](){scene_=1;});
+        btn_start->setOnClickAction([this](){scene_=1;});
         menu_buttons_.emplace_back(btn_start);
+
+
         Button* btn_quit=new Button(5,textures_["phSlot"],fonts_["papyrus"],"WYJDZ",&window);
         btn_quit->setPosition(500,200);
-
         btn_quit->setOnClickAction([&window](){std::cout<<"Guzik"<<std::endl; window.close();});
         menu_buttons_.emplace_back(btn_quit);
 
+        CustomDrawable* background= new CustomDrawable(-10);
+        background->setTexture(textures_["Battleground"]);
+        background->setColor(sf::Color(255,255,255));
+        background->setScale((float)window.getSize().x/(float)textures_["Battleground"].getSize().x, (float)window.getSize().y/(float)textures_["Battleground"].getSize().y);
+        menu_drawables_.emplace_back(background);
+
+
+
+        std::sort(menu_drawables_.begin(), menu_drawables_.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
+        for(CustomDrawable* ptr: menu_drawables_){
+            ptr->setWindow(&window);
+        }
 }
 void Context::main_menu(sf::RenderWindow &window){
-for(Button* ptr: menu_buttons_){
-    ptr->Draw();
+    for(CustomDrawable* ptr: menu_drawables_){
+        ptr->Draw();
+    }
+
+    for(Button* ptr: menu_buttons_){
+        ptr->Draw();
+    }
+    // in window_loop (each frame)
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    for (Button* btn : menu_buttons_) btn->update(mousePos, isPressed);
+
 }
-// in window_loop (each frame)
-sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-for (Button* btn : menu_buttons_) btn->update(mousePos, isPressed);
+
+
+void Context::start_battleground(sf::RenderWindow &window){
+    CustomDrawable* background= new CustomDrawable(-10);
+    CustomDrawable* leftPanel= new CustomDrawable(-8);
+    CustomDrawable* rightPanel= new CustomDrawable(-8);
+    CustomDrawable* bottomPanel = new CustomDrawable(-8);
+
+
+    background->setTexture(textures_["Battleground"]);
+    background->setColor(sf::Color(200,141,60));
+    background->setScale((float)window.getSize().x/(float)textures_["Battleground"].getSize().x, (float)window.getSize().y/(float)textures_["Battleground"].getSize().y);
+    battle_drawables_.emplace_back(background);
+
+
+
+    leftPanel->setTexture(textures_["placeholder"]);
+    leftPanel->setColor(sf::Color(229,161,80));
+    leftPanel->setScale((float)window.getSize().x*0.25/(float)textures_["placeholder"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["placeholder"].getSize().y);
+    battle_drawables_.emplace_back(leftPanel);
+
+
+
+    rightPanel->setTexture(textures_["placeholder"]);
+    rightPanel->setPosition(window.getSize().x*0.75,0);
+    rightPanel->setColor(sf::Color(229,161,80));
+    rightPanel->setScale((float)window.getSize().x*0.25/(float)textures_["placeholder"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["placeholder"].getSize().y);
+    battle_drawables_.emplace_back(rightPanel);
+
+    bottomPanel->setTexture(textures_["deck"]);
+    bottomPanel->setOrigin(0,textures_["deck"].getSize().y);
+    bottomPanel->setPosition(0,window.getSize().y);
+    bottomPanel->setColor(sf::Color(250,181,100));
+    bottomPanel->setScale((float)window.getSize().x/(float)textures_["deck"].getSize().x, (float)window.getSize().y*0.3/(float)textures_["deck"].getSize().y);
+    battle_drawables_.emplace_back(bottomPanel);
+
+
+
+
+
+
+    std::sort(battle_drawables_.begin(), battle_drawables_.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
+    for(CustomDrawable* ptr: battle_drawables_){
+        ptr->setWindow(&window);
+    }
+}
+
+void Context::battleground(sf::RenderWindow &window){
+    for(CustomDrawable* ptr: battle_drawables_){
+        ptr->Draw();
+    }
 
 }

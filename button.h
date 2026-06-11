@@ -6,7 +6,7 @@
 #endif // BUTTON_H
 
 #include "Interactive.h"
-
+#include <functional>
 
 class Button : public Interactive
 {
