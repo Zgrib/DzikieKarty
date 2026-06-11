@@ -91,7 +91,7 @@ Card* GameManager::BuildCard(int _damage, int _health, int _cost, CostType _ct,
 
 
     CustomTextDrawable* health = new CustomTextDrawable(&(c->health));
-    health->setRelativePosition(70, 140);
+    health->setRelativePosition(90, 140);
     health->text->setCharacterSize(24);
     health->text->setFillColor(sf::Color::Black);
     health->text->setFont(_font);
