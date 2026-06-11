@@ -18,11 +18,11 @@ private:
     // Lista kart aktualnie znajdujących się na planszy do renderowania
     std::vector<Card*> deployedCards_;
 
-    Card* selectedCard_=nullptr;
-    std::vector<Card*> cardsToSacrifice_;
 
 
 public:
+    Card* selectedCard=nullptr;
+    std::vector<Card*> cardsToSacrifice;
 
     GameManager(sf::RenderWindow& window);
     ~GameManager();
@@ -45,6 +45,8 @@ public:
 
     // Gettery
     GameBoard* getBoard() const;
+
+    bool tryPlayCard(Player& player, Card* card, int targetRow, int targetCol, const std::vector<std::pair<int, int>>& sacrifices);
 };
 
 #endif // GAMEMANAGER_H

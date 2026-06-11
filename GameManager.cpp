@@ -1,5 +1,6 @@
 #include <algorithm> // Wymagane dla std::remove_if
 #include "GameManager.h"
+#include <iostream>
 
 GameManager::GameManager(sf::RenderWindow& window)
     : window_(window), board_(nullptr) {
@@ -83,6 +84,70 @@ bool GameManager::placeCard(Card* card, int row, int col) {
 
     return true;
 }
+
+// Plik: GameManager.cpp
+
+bool GameManager::tryPlayCard(Player& player, Card* card, int targetRow, int targetCol, const std::vector<std::pair<int, int>>& sacrifices) {
+    if (card == nullptr || board_ == nullptr) return false;
+
+    // 1. Sprawdzenie, czy slot docelowy jest wolny
+    if (!battleEngine_.isSlotEmpty(targetRow, targetCol)) {
+        std::cout << "Ten slot jest juz zajety!\n";
+        return false;
+    }
+
+    // 2. Walidacja kosztu krwi (CostType::BLOOD)
+    int requiredCost = card->getCost(); // np. 0, 1, 2...
+
+    if (requiredCost > 0) {
+        // Sprawdzamy, czy gracz zaznaczył odpowiednią liczbę ofiar
+        if (sacrifices.size() < static_cast<size_t>(requiredCost)) {
+            std::cout << "Musisz wybrac wiecej kart do poswiecenia! Wymagane: " << requiredCost << "\n";
+            return false;
+        }
+
+        // Sprawdzamy, czy wybrane ofiary rzeczywiście należą do gracza (dolny rząd, czyli row = 1)
+        for (auto const& pos : sacrifices) {
+            int sCol = pos.first;
+            int sRow = pos.second;
+
+            if (sRow != 1) {
+                std::cout << "Mozesz poswiecac tylko wlasne karty z dolnego rzedu!\n";
+                return false;
+            }
+            if (battleEngine_.board[sCol][sRow] == nullptr) {
+                std::cout << "Jeden z wybranych slotow ofiarnych jest pusty!\n";
+                return false;
+            }
+        }
+
+        // --- PROCES POŚWIĘCENIA (Usuwanie starych kart) ---
+        for (auto const& pos : sacrifices) {
+            int sCol = pos.first;
+            int sRow = pos.second;
+            Card* deadCard = battleEngine_.board[sCol][sRow];
+
+            // Usuwamy logicznie z silnika
+            battleEngine_.board[sCol][sRow] = nullptr;
+
+            // Usuwamy z wektora renderowania GameManager i zwalniamy pamięć
+            deployedCards_.erase(std::remove(deployedCards_.begin(), deployedCards_.end(), deadCard), deployedCards_.end());
+            delete deadCard;
+        }
+    }
+
+    // 3. FIZYCZNE ZAGRANIE NOWEJ KARTY NA PLANSZĘ
+    // Korzystamy z napisanej wcześniej funkcji pozycjonowania siatki
+    placeCard(card, targetRow, targetCol);
+
+    // 4. USUNIĘCIE KARTY Z RĘKI GRACZA
+    player.hand.erase(std::remove(player.hand.begin(), player.hand.end(), card), player.hand.end());
+    player.updateHandPositions(); // Przesuwamy pozostałe na ręce karty, żeby nie było dziur
+
+    return true;
+}
+
+
 
 void GameManager::drawBoardElements() {
     for (Card* card : deployedCards_) {

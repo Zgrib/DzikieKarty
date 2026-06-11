@@ -10,6 +10,7 @@ SOURCES += main.cpp \
     GameThread.cpp \
     Interface.cpp \
     LogThread.cpp \
+    Player.cpp \
     button.cpp \
     context.cpp \
     enemyai.cpp \

@@ -18,12 +18,12 @@ private:
     //może lepiej aby to były sloty na kartę a nie po prostu karty???
     //to chyba zależy, tak też można
     //std::vector<std::vector<Card*>> board;
-    Card* board[4][2];
 
 
 
 
 public:
+    Card* board[4][2];
 
 
 
@@ -61,14 +61,13 @@ public:
     bool isSlotEmpty(int row, int col);
     ///unsure if this will be neccessary??
     void PrepareBattle(){
-
         for(auto& v:board){
             for(auto& ptr:v){
                 ptr=nullptr;
             }
         }
-
-
+        player->prepareForBattle();
+        //eai prepare
     }
 
     void EndTurn();

@@ -58,6 +58,7 @@ void Context::load_fonts(){
         fonts_.emplace(key, std::move(font));
     }
 }
+
 void Context::start_context() {
     try {
         load_textures();
@@ -115,7 +116,19 @@ void Context::window_loop(sf::RenderWindow &window){
             Context::battleground(window);
             manager_->drawBoardElements();
         }
+        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
+
+        for (Card* card : manager_->getBattleEngine().player->hand) {
+            if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                manager_->selectedCard = card;
+                manager_->cardsToSacrifice.clear(); // Resetujemy poprzednie ofiary
+                // Wizualne wyróżnienie karty (np. uniesienie jej lekko w górę)
+                card->setPosition(card->getPosition().x, card->getPosition().y - 30.f);
+                card->setSelected(true);
+                break;
+            }
+        }
         // end the current frame
         window.display();
     }

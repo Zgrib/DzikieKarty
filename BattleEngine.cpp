@@ -37,6 +37,11 @@ void BattleEngine::update(float deltaTime) {
         break;
 
     case BattleState::CARD_PROCESSING: {
+        if (manager_ != nullptr) {
+            manager_->cleanupDeadCards();
+        }
+
+
         // POPRAWKA: Indeksowanie [col][row] zgodnie z Twoją deklaracją board[4][2]
         Card* activeCard = board[currentProcessCol][currentProcessRow];
 
@@ -75,6 +80,8 @@ void BattleEngine::update(float deltaTime) {
                 currentState = BattleState::CARD_PROCESSING;
             }
         }
+
+
         break;
 
     }
