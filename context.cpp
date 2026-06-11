@@ -18,7 +18,11 @@ void Context::load_textures() {
         {"squirel",   "resources/wiewiorka.png"},
         {"raven",       "resources/raven.png"},
         {"Battleground","resources/Battleground.png"},
-        {"deck",       "resources/Deck.png"}
+        {"deck",       "resources/Deck.png"},
+        {"chat",       "resources/chat.png"},
+        {"waga",       "resources/waga.png"},
+        {"button",       "resources/Button.png"},
+        {"button_pressed",       "resources/Button_pressed.png"}
     };
 
     for (auto &p : files) {
@@ -164,13 +168,13 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
 }
 
 void Context::start_main_menu(sf::RenderWindow &window){
-        Button* btn_start=new Button(5,textures_["phSlot"],fonts_["papyrus"],"START",&window);
+        Button* btn_start=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"START",&window);
         btn_start->setPosition(200,200);
         btn_start->setOnClickAction([this](){scene_=1;});
         menu_buttons_.emplace_back(btn_start);
 
 
-        Button* btn_quit=new Button(5,textures_["phSlot"],fonts_["papyrus"],"WYJDZ",&window);
+        Button* btn_quit=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
         btn_quit->setPosition(500,200);
         btn_quit->setOnClickAction([&window](){std::cout<<"Guzik"<<std::endl; window.close();});
         menu_buttons_.emplace_back(btn_quit);
@@ -210,14 +214,14 @@ void Context::start_battleground(sf::RenderWindow &window){
     CustomDrawable* rightPanel= new CustomDrawable(-8);
     CustomDrawable* bottomPanel = new CustomDrawable(-8);
 
-    Button* quit = new Button(5,textures_["phSlot"],fonts_["papyrus"],"WYJDZ",&window);
+    Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
     quit->setPosition(1800,50);
     quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
     battle_buttons_.emplace_back(quit);
     std::cout<<"test test test\n";
 
-    Button* endTurn = new Button(5,textures_["phSlot"],fonts_["papyrus"],"Zakoncz ture",&window);
-    endTurn->setPosition(200,500);
+    Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
+    endTurn->setPosition(200,700);
     endTurn->setOnClickAction([this](){
         std::cout << "Koniec tury! Odpalam silnik...\n";
         manager_->getBattleEngine().EndTurn();
@@ -226,30 +230,30 @@ void Context::start_battleground(sf::RenderWindow &window){
     std::cout << "Test/n";
 
     background->setTexture(textures_["Battleground"]);
-    background->setColor(sf::Color(200,141,60));
+    //background->setColor(sf::Color(200,141,60));
     background->setPosition((float)window.getSize().x*0.25,0);
     background->setScale((float)window.getSize().x*0.5/(float)textures_["Battleground"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["Battleground"].getSize().y);
     battle_drawables_.emplace_back(background);
 
 
 
-    leftPanel->setTexture(textures_["placeholder"]);
-    leftPanel->setColor(sf::Color(229,161,80));
-    leftPanel->setScale((float)window.getSize().x*0.25/(float)textures_["placeholder"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["placeholder"].getSize().y);
+    leftPanel->setTexture(textures_["waga"]);
+    //leftPanel->setColor(sf::Color(229,161,80));
+    leftPanel->setScale((float)window.getSize().x*0.25/(float)textures_["waga"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["waga"].getSize().y);
     battle_drawables_.emplace_back(leftPanel);
 
 
 
-    rightPanel->setTexture(textures_["placeholder"]);
+    rightPanel->setTexture(textures_["chat"]);
     rightPanel->setPosition(window.getSize().x*0.75,0);
-    rightPanel->setColor(sf::Color(229,161,80));
-    rightPanel->setScale((float)window.getSize().x*0.25/(float)textures_["placeholder"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["placeholder"].getSize().y);
+    //rightPanel->setColor(sf::Color(229,161,80));
+    rightPanel->setScale((float)window.getSize().x*0.25/(float)textures_["chat"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["chat"].getSize().y);
     battle_drawables_.emplace_back(rightPanel);
 
     bottomPanel->setTexture(textures_["deck"]);
     bottomPanel->setOrigin(0,textures_["deck"].getSize().y);
     bottomPanel->setPosition(0,window.getSize().y);
-    bottomPanel->setColor(sf::Color(250,181,100));
+    //bottomPanel->setColor(sf::Color(250,181,100));
     bottomPanel->setScale((float)window.getSize().x/(float)textures_["deck"].getSize().x, (float)window.getSize().y*0.3/(float)textures_["deck"].getSize().y);
     battle_drawables_.emplace_back(bottomPanel);
 
