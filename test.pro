@@ -4,11 +4,14 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp \
+    Card.cpp \
+    GameManager.cpp \
     GameThread.cpp \
     Interface.cpp \
     LogThread.cpp \
     button.cpp \
-    context.cpp
+    context.cpp \
+    gameboard.cpp
 
 win32 {
     INCLUDEPATH += "C:/SFML-2.5.1/include"
@@ -42,5 +45,6 @@ HEADERS += \
     Rendering.h \
     TemplateDeck.h \
     button.h \
-    context.h
+    context.h \
+    gameboard.h
 

@@ -3,9 +3,8 @@
 
 
 #include "SFML/Graphics/Sprite.hpp"
-#include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Texture.hpp"
-#include <string>
+#include "Interactive.h"
 
 enum CostType{
     BONES,
@@ -18,17 +17,19 @@ public:
     sf::Sprite sprite;
     sf::Texture background;
     sf::Texture reverse;
+    const sf::Font* font = nullptr;
 
     sf::Vector2f globalPosition;
 
-    Card(int z): Interactive(z){ //blank card
+
+    Card(int z, sf::RenderWindow &window): Interactive(z, &window){ //blank card
         health = 1;
         damage = 0;
         cost = 0;
         costType_ = BLOOD;
 
     }
-    Card(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, int z=0): Interactive(z){
+    Card(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow &window, int z=0): Interactive(z, &window){
         health = _health;
         damage = _damage;
         cost = _cost;
@@ -36,19 +37,23 @@ public:
         sprite.setTexture(_texture);
     }
 
-    int getHealth(){
+    ~Card() override {}
+
+    int getHealth() const{
         return health;
     }
-    int getDamage(){
+    int getDamage() const{
         return damage;
     }
-    int getCost(){
+    int getCost() const{
         return cost;
     }
-    CostType getCostType(){
+    CostType getCostType() const{
         return costType_;
     }
-
+    const sf::RenderWindow& getWindow() const{
+        return (*window);
+    }
 
 
 //private:
@@ -60,62 +65,5 @@ public:
 };
 
 
-Card* BuildCard(int _damage, int _health, int _cost, CostType _ct, const sf::Texture& _texture, int z=0){
-    Fonts* fonts = Fonts::getInstance();
-    Card* c = new Card(_health, _damage, _cost, _ct, _texture, z);
-    c->background = cardBackground;
-    c->setTexture(c->background);
 
-
-    c->spriteTexture = _texture;
-    CustomDrawable* cardSprite = new CustomDrawable();
-    cardSprite->setTexture(c->spriteTexture);
-    cardSprite->setRelativePosition(8, 36);
-    cardSprite->setScale(0.89,0.89);
-    c->addChild(cardSprite);
-
-
-    // std::cout << "spriteTexture size: " << c->spriteTexture.getSize().x << "x" << c->spriteTexture.getSize().y << "\n";
-    // std::cout << "cardSprite texture ptr: " << cardSprite->getTexture() << "\n";
-    // std::cout << "cardSprite textureRect: " << cardSprite->getTextureRect().width << "x" << cardSprite->getTextureRect().height << "\n";
-
-
-
-
-    CustomTextDrawable* health = new CustomTextDrawable(&(c->health));
-    health->setRelativePosition(45, 70);
-    health->text->setCharacterSize(24);
-    health->text->setFillColor(sf::Color::Black);
-    health->text->setFont(fonts->font);
-    health->text->setOutlineThickness(1);
-    c->addChild(health);
-
-    CustomTextDrawable* damage = new CustomTextDrawable(&(c->damage));
-    damage->setRelativePosition(7, 70);
-    damage->text->setCharacterSize(24);
-    damage->text->setFillColor(sf::Color::Black);
-    damage->text->setFont(fonts->font);
-    damage->text->setOutlineThickness(1);
-    c->addChild(damage);
-
-    CustomTextDrawable* cost = new CustomTextDrawable(&(c->cost));
-    cost->setRelativePosition(30, 15);
-    cost->text->setCharacterSize(12);
-    cost->text->setFillColor(sf::Color::Black);
-    cost->text->setFont(fonts->font);
-    cost->text->setOutlineThickness(1);
-    c->addChild(cost);
-
-    if(_ct == CostType::BLOOD)
-        cost->after = " Blood";
-    else
-        cost->after = " Bones";
-
-    return c;
-
-}
-
-Card* cloneCard(const Card* c){
-    return BuildCard(c->health, c->damage, c->cost, c->costType_, *(c->sprite.getTexture()));
-}
 #endif // CARD_H

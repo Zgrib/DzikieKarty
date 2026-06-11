@@ -11,8 +11,22 @@ private:
     Card* board[4][2];
 
 
+
+
 public:
+    BattleEngine(){
+        for(auto& v:board){
+            for(auto& ptr:v){
+                ptr=nullptr;
+            }
+        }
+    }
+
+    bool isSlotEmpty(int row, int col){
+        return (board[col][row]==nullptr);
+    }
     void PrepareBattle(){
+
 
 
 

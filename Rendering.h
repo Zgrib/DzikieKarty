@@ -2,51 +2,47 @@
 
 #ifndef RENDERING_H
 #define RENDERING_H
-
-#include "SFML/Graphics/Color.hpp"
-#include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/System/Vector2.hpp"
-#include <iostream>
 #include <string>
 #endif // RENDERING_H
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <mutex>
+//#include <mutex>
 
-class Fonts{
-private:
-    static Fonts* instance;
-    static std::mutex mtx;
-    Fonts(){}
-
-
-public:
-
-    sf::Font font;
-    Fonts(const Fonts& obj) = delete;
-
-    static Fonts* getInstance(){
-        if(instance==nullptr){
-            std::lock_guard<std::mutex> lock(mtx);
-            if(instance==nullptr)
-                instance = new Fonts();
-        }
-
-        return instance;
-    }
-
-    void loadFont(const std::string& path){
-        if (!font.loadFromFile(path))
-            std::cout<<"no fucking font!!!\n";
-        //font.loadFromFile(path);
-
-    }
+// class Fonts{
+// private:
+//     static Fonts* instance;
+//     static std::mutex mtx;
+//     Fonts(){}
 
 
-};
+// public:
+
+//     sf::Font font;
+//     Fonts(const Fonts& obj) = delete;
+
+//     static Fonts* getInstance(){
+//         if(instance==nullptr){
+//             std::lock_guard<std::mutex> lock(mtx);
+//             if(instance==nullptr)
+//                 instance = new Fonts();
+//         }
+
+//         return instance;
+//     }
+
+//     void loadFont(const std::string& path){
+//         if (!font.loadFromFile(path))
+//             std::cout<<"no fucking font!!!\n";
+//         //font.loadFromFile(path);
+
+//     }
+
+
+// };
 
 
 
@@ -83,6 +79,15 @@ public:
         window = _window;
         parent = _parent;
     }
+    virtual ~CustomDrawable() {
+        // Karta/obiekt usuwając się, usuwa automatycznie wszystkie swoje dzieci z pamięci
+        for (auto child : children) {
+            delete child;
+        }
+        children.clear();
+    }
+
+
     virtual void Draw(){
 
         if(parent!=nullptr){
@@ -161,13 +166,16 @@ public:
         //text->setFont(font);
         //text->setFillColor(sf::Color(0,0,0));
     }
+    ~CustomTextDrawable() override {
+        delete text; // Zapobiega wyciekowi dynamicznie tworzonego sf::Text
+    }
 
 
     void Draw() override {
         if(parent!=nullptr){
             setPosition(parent->getPosition() + positionRelative);
             window = parent->window;
-            text->setPosition(getPosition()+positionRelative);
+            text->setPosition(getPosition());
         }
         if(value != nullptr)
             text->setString(before + std::to_string( *value ) + after);

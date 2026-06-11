@@ -5,7 +5,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "button.h"
-
+#include "GameManager.h"
 class Context
 {
 private:
@@ -24,10 +24,11 @@ private:
     std::map<std::string, sf::Texture> textures_;
 
     std::vector<CustomDrawable*> battle_drawables_;
+    std::vector<Button*> battle_buttons_;
     void start_battleground(sf::RenderWindow &window);
     void battleground(sf::RenderWindow &window);
 
-
+    GameManager* manager_;
 public:
     Context();
     void start_context();
