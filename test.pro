@@ -36,7 +36,6 @@ DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png 
     resources/Button.png \
     resources/Button_pressed.png \
     resources/Deck.png \
-    resources/Waga.png \
     resources/background-2.png \
     resources/background-3.png \
     resources/background-4.png \
@@ -45,9 +44,13 @@ DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png 
     resources/background-7.png \
     resources/background-8.png \
     resources/background.png \
+    resources/cardReverse.png \
     resources/chat.png \
+    resources/deck.png \
     resources/nietoperz.png \
+    resources/opos.png \
     resources/raven.png \
+    resources/roach.png \
     resources/waz.png \
     resources/wiewiorka.png \
     resources/wilk.png
