@@ -36,6 +36,12 @@ private:
     std::vector<Button*> choice_buttons_;
 
 
+
+    void start_gameover(sf::RenderWindow &window);
+    void gameover(sf::RenderWindow &window);
+    Button* gameoverButton;
+    CustomTextDrawable* gameoverText;
+
 public:
     std::map<std::string, sf::Font> fonts_;
     std::map<std::string, sf::Texture> textures_;

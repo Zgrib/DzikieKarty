@@ -28,7 +28,6 @@ public:
     Card* board[4][2];
 
 
-
     BattleState currentState = BattleState::IDLE;
     BattleState getCurrentState(){
         return currentState;

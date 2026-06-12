@@ -31,6 +31,8 @@ private:
     Context* context;
 
 public:
+
+    bool hasLost=false;
     int aiDirectorBudgetIncrease=0;
 
     int aiDirectorBudget;

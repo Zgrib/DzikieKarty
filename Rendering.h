@@ -10,45 +10,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <vector>
-//#include <mutex>
-
-// class Fonts{
-// private:
-//     static Fonts* instance;
-//     static std::mutex mtx;
-//     Fonts(){}
-
-
-// public:
-
-//     sf::Font font;
-//     Fonts(const Fonts& obj) = delete;
-
-//     static Fonts* getInstance(){
-//         if(instance==nullptr){
-//             std::lock_guard<std::mutex> lock(mtx);
-//             if(instance==nullptr)
-//                 instance = new Fonts();
-//         }
-
-//         return instance;
-//     }
-
-//     void loadFont(const std::string& path){
-//         if (!font.loadFromFile(path))
-//             std::cout<<"no fucking font!!!\n";
-//         //font.loadFromFile(path);
-
-//     }
-
-
-// };
-
-
-
-
-
-
 
 ///argument konstruktora stanowi kolejnosc renderowania, im mniejsze z, tym "niżej" jest sprite
 class CustomDrawable:public sf::Sprite{
@@ -173,6 +134,7 @@ public:
 
 
     void Draw() override {
+
         if(parent!=nullptr){
             setPosition(parent->getPosition() + positionRelative);
             window = parent->window;

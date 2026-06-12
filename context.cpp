@@ -111,6 +111,7 @@ void Context::start_context() {
 
 void Context::window_loop(sf::RenderWindow &window){
     sf::Clock deltaClock;
+    start_gameover(window);
     while (window.isOpen()) {
         float deltaTime = deltaClock.restart().asSeconds();
         // check all the window's events that were triggered since the last iteration of the loop
@@ -122,7 +123,7 @@ void Context::window_loop(sf::RenderWindow &window){
         // i to nie tak że ktoś czegoś nie rozumie bo biegle mówie
 
         //womp womp
-        window.clear(sf::Color::Red);
+        window.clear(sf::Color::Black);
 
         // draw everything here...
         if(scene_== 0){
@@ -140,6 +141,9 @@ void Context::window_loop(sf::RenderWindow &window){
         if(scene_== 2){
             Context::choice_menu(window);
 
+        }
+        if(scene_==3){
+            gameover(window);
         }
         // end the current frame
         window.display();
@@ -601,7 +605,10 @@ void Context::start_battleground(sf::RenderWindow &window){
     endBattleButton_->setPosition(1920/2.f -50, 100.f);
     endBattleButton_->setScale(1.2,1.2);
     endBattleButton_->setOnClickAction([this]() {
-        scene_ = 2;
+        if(manager_->hasLost==false)
+            scene_ = 2;
+        else
+            scene_=3;
     });
     endBattleButton_->setVisible(false);
     battle_buttons_.emplace_back(endBattleButton_);
@@ -675,6 +682,38 @@ void Context::battleground(sf::RenderWindow &window){
             ptr->Draw();
         else continue;
     }
+
+
+}
+
+void Context::start_gameover(sf::RenderWindow &window){
+
+    gameoverButton = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
+    gameoverButton->setPosition(1920/2.f, 500);
+    gameoverButton->setScale(2,2);
+    gameoverButton->setOnClickAction([&window](){window.close();});
+
+    gameoverText = new CustomTextDrawable();
+    gameoverText->setWindow(&window);
+    gameoverText->text->setString("To koniec twojej wyprawy");
+    gameoverText->text->setFont(fonts_["papyrus"]);
+    gameoverText->setRelativePosition(-100, -100);
+    gameoverText->text->setFillColor(sf::Color::White);
+    gameoverText->parent=gameoverButton;
+
+
+
+}
+
+void Context::gameover(sf::RenderWindow &window){
+
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+    gameoverButton->update(mappedMousePos, isPressed);
+
+    gameoverButton->Draw();
+    gameoverText->Draw();
 
 
 }
