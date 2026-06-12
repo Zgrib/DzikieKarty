@@ -20,6 +20,7 @@ private:
 
     void window_loop(sf::RenderWindow &window);
     int scene_=0;
+    int choice=0;
 
     std::vector<Button*> menu_buttons_;
     std::vector<CustomDrawable*> menu_drawables_;
@@ -29,6 +30,10 @@ private:
     void start_battleground(sf::RenderWindow &window);
     void battleground(sf::RenderWindow &window);
 
+    void choice_menu(sf::RenderWindow &window);
+    void start_choice_menu(sf::RenderWindow &window);
+    std::vector<CustomDrawable*> choice_drawables_;
+    std::vector<Button*> choice_buttons_;
 
 
 public:

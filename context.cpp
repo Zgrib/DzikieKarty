@@ -3,7 +3,8 @@
 #include "GameLog.h"
 #include "TemplateDeck.h"
 #include <iostream>
-
+#include <ctime>
+#include <cstdlib>
 Context::Context()
 {
 
@@ -24,7 +25,15 @@ void Context::load_textures() {
         {"chat",       "resources/chat.png"},
         {"waga",       "resources/waga.png"},
         {"button",       "resources/Button.png"},
-        {"button_pressed",       "resources/Button_pressed.png"}
+        {"button_pressed",       "resources/Button_pressed.png"},
+        {"background",       "resources/background.png"},
+        {"background-2",       "resources/background-2.png"},
+        {"background-3",       "resources/background-3.png"},
+        {"background-4",       "resources/background-4.png"},
+        {"background-5",       "resources/background-5.png"},
+        {"background-6",       "resources/background-6.png"},
+        {"background-7",       "resources/background-7.png"},
+        {"background-8",       "resources/background-8.png"}
     };
 
     for (auto &p : files) {
@@ -84,7 +93,7 @@ void Context::start_context() {
 
     Context::start_main_menu(window);
     Context::start_battleground(window);
-
+    Context::start_choice_menu(window);
     manager_->getPlayer().initializeDeck(this, window);
     manager_->getPlayer().prepareForBattle(manager_);
     //manager test!!
@@ -141,7 +150,10 @@ void Context::window_loop(sf::RenderWindow &window){
             manager_->cardCounter->text->setString("Talia: " + std::to_string(cardsLeft) + " kart");
         }
 
+        if(scene_== 2){
+            Context::choice_menu(window);
 
+        }
         // end the current frame
         window.display();
     }
@@ -288,9 +300,9 @@ void Context::start_main_menu(sf::RenderWindow &window){
         menu_buttons_.emplace_back(btn_quit);
 
         CustomDrawable* background= new CustomDrawable(-10);
-        background->setTexture(textures_["Battleground"]);
+        background->setTexture(textures_["background-4"]);
         background->setColor(sf::Color(255,255,255));
-        background->setScale((float)window.getSize().x/(float)textures_["Battleground"].getSize().x, (float)window.getSize().y/(float)textures_["Battleground"].getSize().y);
+        background->setScale((float)window.getSize().x/(float)textures_["background-5"].getSize().x, (float)window.getSize().y/(float)textures_["background-5"].getSize().y);
         menu_drawables_.emplace_back(background);
 
 
@@ -314,6 +326,87 @@ void Context::main_menu(sf::RenderWindow &window){
     bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
     for (Button* btn : menu_buttons_) btn->update(mappedMousePos, isPressed);
+
+}
+void Context::start_choice_menu(sf::RenderWindow &window){
+
+        std::vector<Button*> tmp_btn;
+        Button* btn_1=new Button(5,textures_["card"],textures_["card"],fonts_["papyrus"],"WRONA.",&window);
+        tmp_btn.emplace_back(btn_1);
+        Button* btn_2=new Button(5,textures_["card"],textures_["card"],fonts_["papyrus"],"WILK",&window);
+                tmp_btn.emplace_back(btn_2);
+        Button* btn_3=new Button(5,textures_["card"],textures_["card"],fonts_["papyrus"],"WEZ",&window);
+                tmp_btn.emplace_back(btn_3);
+        Button* btn_4=new Button(5,textures_["card"],textures_["card"],fonts_["papyrus"],"NIETOPERZ",&window);
+                tmp_btn.emplace_back(btn_4);
+        Button* btn_5=new Button(5,textures_["card"],textures_["card"],fonts_["papyrus"],"WIEWIORKA",&window);
+                tmp_btn.emplace_back(btn_5);
+                // ustaw akcje dla przycisków — każdy przycisk tworzy odpowiednią kartę bezpośrednio
+                tmp_btn[0]->setOnClickAction([this, &window](){ // WRONA
+                    Player& p = manager_->getPlayer();
+                    TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WRONA);
+                    Card* c = manager_->BuildCard(s, textures_["raven"], textures_["card"], fonts_["papyrus"], window, 0);
+                    p.addCard(c); scene_ = 1;
+                });
+                tmp_btn[1]->setOnClickAction([this, &window](){ // WILK
+                    Player& p = manager_->getPlayer();
+                    TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WILK);
+                    Card* c = manager_->BuildCard(s, textures_["wilk"], textures_["card"], fonts_["papyrus"], window, 0);
+                    p.addCard(c); scene_ = 1;
+                });
+                tmp_btn[2]->setOnClickAction([this, &window](){ // WEZ
+                    Player& p = manager_->getPlayer();
+                    TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WEZ);
+                    Card* c = manager_->BuildCard(s, textures_["wez"], textures_["card"], fonts_["papyrus"], window, 0);
+                    p.addCard(c); scene_ = 1;
+                });
+                tmp_btn[3]->setOnClickAction([this, &window](){ // NIETOPERZ
+                    Player& p = manager_->getPlayer();
+                    TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::NIETOPERZ);
+                    Card* c = manager_->BuildCard(s, textures_["nietoperz"], textures_["card"], fonts_["papyrus"], window, 0);
+                    p.addCard(c); scene_ = 1;
+                });
+                tmp_btn[4]->setOnClickAction([this, &window](){ // WIEWIORKA
+                    Player& p = manager_->getPlayer();
+                    TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WIEWIORKA);
+                    Card* c = manager_->BuildCard(s, textures_["wiewiorka"], textures_["card"], fonts_["papyrus"], window, 0);
+                    p.addCard(c); scene_ = 1;
+                });
+                                srand(time(0));
+                int randomNum = rand() %5;
+        tmp_btn[randomNum]->setPosition(300,400);
+        choice_buttons_.emplace_back(tmp_btn[randomNum]);
+
+    randomNum = rand() %5;
+tmp_btn[randomNum]->setPosition(1300,400);
+choice_buttons_.emplace_back(tmp_btn[randomNum]);
+        CustomDrawable* background= new CustomDrawable(-10);
+        background->setTexture(textures_["background-2"]);
+        background->setColor(sf::Color(255,255,255));
+        background->setScale((float)window.getSize().x/(float)textures_["background-5"].getSize().x, (float)window.getSize().y/(float)textures_["background-5"].getSize().y);
+        choice_drawables_.emplace_back(background);
+
+
+
+        std::sort(choice_drawables_.begin(), choice_drawables_.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
+        for(CustomDrawable* ptr: choice_drawables_){
+            ptr->setWindow(&window);
+        }
+}
+void Context::choice_menu(sf::RenderWindow &window){
+
+    for(CustomDrawable* ptr: choice_drawables_){
+        ptr->Draw();
+    }
+
+    for(Button* ptr: choice_buttons_){
+        ptr->Draw();
+    }
+    // in window_loop (each frame)
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
+    sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+    for (Button* btn : choice_buttons_) btn->update(mappedMousePos, isPressed);
 
 }
 
@@ -360,10 +453,10 @@ void Context::start_battleground(sf::RenderWindow &window){
 
     std::cout << "Test/n";
 
-    background->setTexture(textures_["Battleground"]);
+    background->setTexture(textures_["background-7"]);
     //background->setColor(sf::Color(200,141,60));
     background->setPosition((float)window.getSize().x*0.25,0);
-    background->setScale((float)window.getSize().x*0.5/(float)textures_["Battleground"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["Battleground"].getSize().y);
+    background->setScale((float)window.getSize().x*0.5/(float)textures_["background-5"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["background-5"].getSize().y);
     battle_drawables_.emplace_back(background);
 
 
@@ -390,7 +483,7 @@ void Context::start_battleground(sf::RenderWindow &window){
     GameLog::add("Powodzenia.");
 
 
-    bottomPanel->setTexture(textures_["deck"]);
+    bottomPanel->setTexture(textures_["background"]);
     bottomPanel->setOrigin(0,textures_["deck"].getSize().y);
     bottomPanel->setPosition(0,window.getSize().y);
     //bottomPanel->setColor(sf::Color(250,181,100));
