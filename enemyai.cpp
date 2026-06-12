@@ -72,6 +72,9 @@ bool EnemyAI::executeDirectorTurn(GameManager* manager, sf::RenderWindow& window
         CreatureType selectedType = availableCreatures_[randomIdx];
         int cardCost = manager->aiCardValues[selectedType];
 
+        if(manager->aiDirectorBudget <=0 )
+            return false;
+
         if (manager->aiDirectorCredits >= cardCost) {
             int colIdx = rand() % freeColumns.size();
             int targetCol = freeColumns[colIdx];
@@ -89,6 +92,7 @@ bool EnemyAI::executeDirectorTurn(GameManager* manager, sf::RenderWindow& window
 
 
             manager->aiDirectorCredits -= cardCost;
+            manager->aiDirectorBudget -=cardCost;
             GameLog::add("AI zagrywa: " + aiCard->name);
 
             return true;

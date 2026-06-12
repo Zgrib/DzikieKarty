@@ -32,7 +32,7 @@ void GameLog::add(const std::string& msg) {
     if (!instance) return;
 
     std::string currentLine = "";
-    float maxWidth = 420.f;
+    float maxWidth = 390.f;
 
     for (size_t i = 0; i < msg.length(); ++i) {
         currentLine += msg[i];

@@ -31,6 +31,10 @@ private:
     Context* context;
 
 public:
+    int aiDirectorBudgetIncrease=0;
+
+    int aiDirectorBudget;
+
     int aiDirectorCredits;
     void resetBattleground();
     std::map<CreatureType, int> aiCardValues = {
@@ -38,7 +42,8 @@ public:
         { CreatureType::NIETOPERZ,  3 },
         { CreatureType::WILK,       5 },
         { CreatureType::WRONA,      6 },
-        { CreatureType::KARALUCH,   2}
+        { CreatureType::KARALUCH,   2},
+        { CreatureType::OPOS,   1}
     };
 
     sf::Font& getFont(std::string fontname);

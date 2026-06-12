@@ -98,9 +98,10 @@ void Context::start_context() {
     Context::start_choice_menu(window);
     manager_->getPlayer().initializeDeck(this, window);
     manager_->getPlayer().prepareForBattle(manager_);
+
     int startIncome = 3;
     manager_->aiDirectorCredits += startIncome;
-
+    manager_->aiDirectorBudget = startIncome*3;
     manager_->getAI().makeMove(manager_);
 
 
@@ -351,6 +352,8 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     p.addCard(c);
                     manager_->resetBattleground();
                     manager_->aiDirectorCredits += 3;
+                    manager_->aiDirectorBudgetIncrease += 2;
+                    manager_->aiDirectorBudget = manager_->aiDirectorCredits *3 + manager_->aiDirectorBudgetIncrease;
                     manager_->getAI().makeMove(manager_);
                     scene_ = 1;
 
@@ -360,7 +363,13 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     Player& p = manager_->getPlayer();
                     TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WILK);
                     Card* c = manager_->BuildCard(s, textures_["wilk"], textures_["card"], fonts_["papyrus"], window, 0);
-                    p.addCard(c); scene_ = 1;
+                    p.addCard(c);
+                    manager_->resetBattleground();
+                    manager_->aiDirectorCredits += 3;
+                    manager_->aiDirectorBudgetIncrease += 2;
+                    manager_->aiDirectorBudget = manager_->aiDirectorCredits *3 + manager_->aiDirectorBudgetIncrease;
+                    manager_->getAI().makeMove(manager_);
+                    scene_ = 1;
                 });
                 tmp_btn[2]->setOnClickAction([this, &window](){ // WEZ
                     Player& p = manager_->getPlayer();
@@ -369,6 +378,8 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     p.addCard(c);
                     manager_->resetBattleground();
                     manager_->aiDirectorCredits += 3;
+                    manager_->aiDirectorBudgetIncrease += 2;
+                    manager_->aiDirectorBudget = manager_->aiDirectorCredits *3 + manager_->aiDirectorBudgetIncrease;
                     manager_->getAI().makeMove(manager_);
                     scene_ = 1;
                 });
@@ -379,6 +390,8 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     p.addCard(c);
                     manager_->resetBattleground();
                     manager_->aiDirectorCredits += 3;
+                    manager_->aiDirectorBudgetIncrease += 2;
+                    manager_->aiDirectorBudget = manager_->aiDirectorCredits *3 + manager_->aiDirectorBudgetIncrease;
                     manager_->getAI().makeMove(manager_);
                     scene_ = 1;
                 });
@@ -389,6 +402,8 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     p.addCard(c);
                     manager_->resetBattleground();
                     manager_->aiDirectorCredits += 3;
+                    manager_->aiDirectorBudgetIncrease += 2;
+                    manager_->aiDirectorBudget = manager_->aiDirectorCredits *3 + manager_->aiDirectorBudgetIncrease;
                     manager_->getAI().makeMove(manager_);
                     scene_ = 1;
                 });
