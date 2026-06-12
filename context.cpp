@@ -20,6 +20,8 @@ void Context::load_textures() {
         {"snake",         "resources/waz.png"},
         {"squirel",   "resources/wiewiorka.png"},
         {"raven",       "resources/raven.png"},
+        {"opos",       "resources/opos.png"},
+        {"roach",       "resources/roach.png"},
         {"Battleground","resources/Battleground.png"},
         {"deck",       "resources/Deck.png"},
         {"chat",       "resources/chat.png"},
@@ -296,13 +298,13 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
 
 void Context::start_main_menu(sf::RenderWindow &window){
         Button* btn_start=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"START",&window);
-        btn_start->setPosition(200,200);
+        btn_start->setPosition(1920/2.f, 400);
         btn_start->setOnClickAction([this](){scene_=1;});
         menu_buttons_.emplace_back(btn_start);
 
 
         Button* btn_quit=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
-        btn_quit->setPosition(500,200);
+        btn_quit->setPosition(1920/2.f, 600);
         btn_quit->setOnClickAction([&window](){std::cout<<"Guzik"<<std::endl; window.close();});
         menu_buttons_.emplace_back(btn_quit);
 

@@ -97,6 +97,7 @@ void BattleEngine::update(float deltaTime) {
 
     case BattleState::START_PHASE:
         //std::cout << "Rozpoczynam bitwe. Faza wstepna Directora...\n";
+
         manager_->aiDirectorCredits += 3; // Startowe punkty dla Directora
         timer.restart();
         currentState = BattleState::DIRECTOR_PHASE;
@@ -135,7 +136,8 @@ void BattleEngine::update(float deltaTime) {
 
             if (opponentCard != nullptr) {
                 opponentCard->health -= activeCard->getDamage();
-                GameLog::add("-> " + activeCard->name + " atakuje " + opponentCard->name + " zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
+                GameLog::add("-> " + activeCard->name + " atakuje " + opponentCard->name + " zadajac \n" + std::to_string(activeCard->getDamage()) + " obrazen.");
+
             } else {
                 if (opponentRow == 0) {
                     eai->damageTaken += activeCard->getDamage();
@@ -179,6 +181,7 @@ void BattleEngine::update(float deltaTime) {
     case BattleState::COOLDOWN:
         if (timer.getElapsedTime().asSeconds() >= delayBetweenActions) {
             currentProcessCol++;
+            manager_->cleanupDeadCards();
 
             if (currentProcessCol >= 4) {
                 if (abs(player->damageTaken - eai->damageTaken) >= 5) {
@@ -397,6 +400,7 @@ void BattleEngine::EndBattle(){
     player->endBattleCleanup();
     for (int c = 0; c < 4; ++c) {
         for (int r = 0; r < 2; ++r) {
+            //delete manager_->getBattleEngine().board[c][r];
             manager_->getBattleEngine().board[c][r] = nullptr;
         }
     }

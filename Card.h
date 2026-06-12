@@ -58,7 +58,7 @@ public:
     Card* clone() const;
 
     ~Card() override {
-        GameLog::add("-> "+name+" umiera.");
+        //GameLog::add("-> "+name+" umiera.");
     }
 
     int getHealth() const{

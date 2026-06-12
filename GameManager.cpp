@@ -99,12 +99,14 @@ void GameManager::cleanupDeadCards() {
         for (int r = 0; r < 2; ++r) {
             Card* cardOnBoard = battleEngine_.board[c][r];
             if (cardOnBoard != nullptr && cardOnBoard->getHealth() <= 0) {
-                battleEngine_.board[c][r] = nullptr; // Pole jest teraz bezpiecznie puste
+                if(r==1)
+                    bones+=1;
+                GameLog::add("-> "+battleEngine_.board[c][r]->name + " umiera.");
+                battleEngine_.board[c][r] = nullptr;
             }
         }
     }
 
-    // 2. Dopiero teraz bezpiecznie usuwamy obiekty z pamięci RAM i z wektora deployedCards_
     for (Card* card : deployedCards_) {
         if (card != nullptr && card->getHealth() <= 0) {
             delete card; // Fizyczne zwolnienie pamięci

@@ -8,8 +8,9 @@
 
 void Player::addCard(const Card* c){
 
-    deck.emplace_back(c->clone());
+    permanentDeck.emplace_back(c->clone());
 }
+
 
 
 void Player::endBattleCleanup() {
@@ -92,8 +93,8 @@ void Player::initializeDeck(Context* context, sf::RenderWindow& window) {
     Card* card1 = context->manager_->BuildCard(snakeStats1, context->textures_[snakeStats1.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     // Waz 2
-    CardStats snakeStats2 = tmp_deck.generateCardStats(CreatureType::WEZ);
-    Card* card2 = context->manager_->BuildCard(snakeStats2, context->textures_[snakeStats2.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+    CardStats snakeStats2 = tmp_deck.generateCardStats(CreatureType::OPOS);
+    Card* opos = context->manager_->BuildCard(snakeStats2, context->textures_[snakeStats2.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     CardStats roachStats = tmp_deck.generateCardStats(CreatureType::KARALUCH);
     Card* roach = context->manager_->BuildCard(roachStats, context->textures_[roachStats.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
@@ -102,9 +103,11 @@ void Player::initializeDeck(Context* context, sf::RenderWindow& window) {
 
     permanentDeck.emplace_back(card);
     permanentDeck.emplace_back(card1);
-    permanentDeck.emplace_back(roach);
-    permanentDeck.emplace_back(card2);
+    permanentDeck.emplace_back(opos);
     permanentDeck.emplace_back(card3);
+    permanentDeck.emplace_back(roach);
+ 
+
 }
 
 
@@ -175,10 +178,10 @@ bool Player::drawCard() {
 }
 
 void Player::removeCard(Card* c) {
-    auto it = std::find(deck.begin(), deck.end(), c);
-    if (it != deck.end()) {
+    auto it = std::find(permanentDeck.begin(), permanentDeck.end(), c);
+    if (it != permanentDeck.end()) {
         delete *it;
-        deck.erase(it);
+        permanentDeck.erase(it);
     }
 }
 

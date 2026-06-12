@@ -7,7 +7,7 @@ class Context;
 
 class Player{
 private:
-    std::vector<Card*> deck;
+
     std::vector<Card*> permanentDeck;
 
 public:
