@@ -12,6 +12,7 @@ enum CostType{
     BLOOD
 };
 
+///name, health, damage, cost, costtype, texKey
 struct CardStats {
     std::string name;
     int health;
@@ -23,9 +24,8 @@ struct CardStats {
 
 class Card: public Interactive{
     bool isMarkedForSacrifice_ = false;
-
-
 public:
+
     sf::Texture spriteTexture;
     sf::Sprite sprite;
     sf::Texture background;
@@ -42,26 +42,6 @@ public:
         cost = 0;
         costType_ = BLOOD;
     }
-
-    /*
-    Card(int _health, int _damage,std::string _name, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow &window, int z=0): Interactive(z, &window){
-        health = _health;
-        damage = _damage;
-        cost = _cost;
-        costType_ = _ct;
-        sprite.setTexture(_texture);
-        name =_name;
-    }
-
-    Card(int _health, int _damage,std::string _name, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow* window, int z=0): Interactive(z, window){
-        health = _health;
-        damage = _damage;
-        cost = _cost;
-        costType_ = _ct;
-        sprite.setTexture(_texture);
-        name =_name;
-    }
-    */
 
     Card(const CardStats& stats, sf::Texture _texture, sf::RenderWindow* window, int z=0)
         : Interactive(z, window) {
@@ -101,10 +81,8 @@ public:
     void setSacrificeHighlight(bool highlight) {
         isMarkedForSacrifice_ = highlight;
         if (isMarkedForSacrifice_) {
-            // Kolorujemy kartę na czerwono-krwisty odcień
             this->setColor(sf::Color(255, 100, 100));
         } else {
-            // Przywracamy domyślny, biały kolor (brak filtra)
             this->setColor(sf::Color::White);
         }
     }

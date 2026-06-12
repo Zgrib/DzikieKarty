@@ -3,17 +3,18 @@
 #include <string>
 #include "Card.h"
 
-enum class CreatureType { WILK, NIETOPERZ, WRONA, WEZ, WIEWIORKA };
+enum class CreatureType { WILK, NIETOPERZ, WRONA, WEZ, WIEWIORKA, KARALUCH };
 
 class TemplateDeck {
 public:
     TemplateDeck() {
         baseTemplates = {
-            {CreatureType::WILK,      {"Wilk", 2, 3, 2, CostType::BONES, "wolf"}},
+            {CreatureType::WILK,      {"Wilk", 2, 3, 2, CostType::BLOOD, "wolf"}},
             {CreatureType::NIETOPERZ, {"Nietoperz", 1, 1, 1, CostType::BLOOD, "bat"}},
-            {CreatureType::WRONA,     {"Wrona", 2, 2, 2, CostType::BONES, "raven"}},
-            {CreatureType::WEZ,       {"Waz", 1, 3, 2, CostType::BLOOD, "snake"}},
-            {CreatureType::WIEWIORKA, {"Wiewiorka", 1, 0, 0, CostType::BONES, "squirel"}}
+            {CreatureType::WRONA,     {"Wrona", 2, 2, 2, CostType::BLOOD, "raven"}},
+            {CreatureType::WEZ,       {"Waz", 1, 3, 1, CostType::BLOOD, "snake"}},
+            {CreatureType::WIEWIORKA, {"Wiewiorka", 1, 0, 0, CostType::BLOOD, "squirel"}},
+            {CreatureType::KARALUCH, {"Karaluch", 1, 1, 2, CostType::BONES, "placeholder"}}
         };
     }
 

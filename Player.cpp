@@ -80,22 +80,28 @@ void Player::initializeDeck(Context* context, sf::RenderWindow& window) {
 
     // Kruk
     CardStats ravenStats = tmp_deck.generateCardStats(CreatureType::WRONA);
-    Card* card = context->manager_->BuildCard(ravenStats, context->textures_["raven"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+    Card* card = context->manager_->BuildCard(ravenStats, context->textures_[ravenStats.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     // Wilk
     CardStats wolfStats = tmp_deck.generateCardStats(CreatureType::WILK);
-    Card* card3 = context->manager_->BuildCard(wolfStats, context->textures_["wolf"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+    Card* card3 = context->manager_->BuildCard(wolfStats, context->textures_[wolfStats.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     // Waz 1
     CardStats snakeStats1 = tmp_deck.generateCardStats(CreatureType::WEZ);
-    Card* card1 = context->manager_->BuildCard(snakeStats1, context->textures_["snake"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+    Card* card1 = context->manager_->BuildCard(snakeStats1, context->textures_[snakeStats1.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     // Waz 2
     CardStats snakeStats2 = tmp_deck.generateCardStats(CreatureType::WEZ);
-    Card* card2 = context->manager_->BuildCard(snakeStats2, context->textures_["snake"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+    Card* card2 = context->manager_->BuildCard(snakeStats2, context->textures_[snakeStats2.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+
+    CardStats roachStats = tmp_deck.generateCardStats(CreatureType::KARALUCH);
+    Card* roach = context->manager_->BuildCard(roachStats, context->textures_[roachStats.textureKey], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+
+
 
     permanentDeck.emplace_back(card);
     permanentDeck.emplace_back(card1);
+    permanentDeck.emplace_back(roach);
     permanentDeck.emplace_back(card2);
     permanentDeck.emplace_back(card3);
 }
@@ -131,11 +137,18 @@ void Player::prepareForBattle(GameManager* manager) {
     std::random_device rd;
     std::mt19937 g(rd());
     std::shuffle(battleDeck.begin(), battleDeck.end(), g);
+    TemplateDeck tmp_deck;
+    CardStats squi = tmp_deck.generateCardStats(CreatureType::WIEWIORKA);
+    Card* squirrel = manager->BuildCard(squi, manager->getTextureCreature(CreatureType::WIEWIORKA), manager->getTexture("card"), manager->getFont("papyrus"), manager->getWindow(),2);
+    hand.push_back(squirrel);
+
 
     // 4. Dobranie początkowej ręki (3 karty na start)
     for (int i = 0; i < 3; ++i) {
         drawCard();
     }
+
+
 }
 
 bool Player::drawCard() {

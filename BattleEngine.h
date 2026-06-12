@@ -6,11 +6,12 @@
 #ifndef BATTLEENGINE_H
 #define BATTLEENGINE_H
 enum class BattleState {
-    IDLE,            // Oczekiwanie na ruch gracza
-    START_PHASE,     // Przygotowanie do walki
-    CARD_PROCESSING, // Aktywacja konkretnej karty (zadawanie obrażeń)
-    COOLDOWN,        // Krótka pauza (np. 0.5 sekundy), aby gracz zauważył co się stało
-    END_PHASE,        // Sprzątanie po turze, oddanie ruchu
+    IDLE,
+    START_PHASE,
+    CARD_PROCESSING,
+    COOLDOWN,
+    DIRECTOR_PHASE,
+    END_PHASE,
     BATTLE_OVER
 };
 class GameManager;
@@ -47,8 +48,9 @@ public:
     GameManager* manager_=nullptr;
 
     void setGM(GameManager* manager);
-
-
+    //void goToDirectorPhase();
+    void moveToNextCard();
+    void goToNextRoundDirectorPlanning();
     BattleEngine(){
         currentState = BattleState::IDLE;
         for(auto& v:board){

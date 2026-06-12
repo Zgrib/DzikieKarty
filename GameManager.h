@@ -7,8 +7,9 @@
 #include <vector>
 #include "BattleEngine.h"
 #include "GameBoard.h"
+#include "TemplateDeck.h"
 //#include "Card.cpp"
-
+class Context;
 class GameManager {
 private:
     sf::RenderWindow& window_;
@@ -27,16 +28,33 @@ private:
 
     Player* player;
     EnemyAI* eai;
-
+    Context* context;
 
 public:
+    int aiDirectorCredits;
+    std::map<CreatureType, int> aiCardValues = {
+        { CreatureType::WEZ,        4 },
+        { CreatureType::NIETOPERZ,  3 },
+        { CreatureType::WILK,       5 },
+        { CreatureType::WRONA,      6 },
+        { CreatureType::KARALUCH,   2}
+    };
+
+    sf::Font& getFont(std::string fontname);
+
+    sf::Texture& getTextureCreature(CreatureType type);
+    sf::Texture& getTexture(std::string tex);
+
+
+    bool bloodCostPaid = false;
+    int bones=5;
     bool canDraw=false;
     CustomTextDrawable* cardCounter=nullptr;
     Card* selectedCard=nullptr;
     std::vector<Card*> cardsToSacrifice;
 
-
-    GameManager(sf::RenderWindow& window);
+    sf::RenderWindow& getWindow();
+    GameManager(sf::RenderWindow& window, Context* c);
     ~GameManager();
 
     // Metoda odpowiedzialna za logiczne i graficzne postawienie karty

@@ -1,10 +1,11 @@
 #include <algorithm> // Wymagane dla std::remove_if
 #include "GameManager.h"
 #include <iostream>
+#include "context.h"
 
-GameManager::GameManager(sf::RenderWindow& window)
+GameManager::GameManager(sf::RenderWindow& window, Context* c)
     : window_(window), board_(nullptr), selectedCard(nullptr) { // upewnij się, że inicjalizujesz selectedCard
-
+    context = c;
     float boardX = window_.getSize().x * 0.35f;
     float boardY = 0.f;
     float boardWidth = window_.getSize().x * 0.30f;
@@ -18,6 +19,25 @@ GameManager::GameManager(sf::RenderWindow& window)
     player = battleEngine_.player;
     eai = battleEngine_.eai;
 }
+sf::RenderWindow& GameManager::getWindow(){
+    return window_;
+}
+
+
+
+sf::Font& GameManager::getFont(std::string fontname){
+    return context->fonts_[fontname];
+}
+
+sf::Texture& GameManager::getTextureCreature(CreatureType type){
+    TemplateDeck tmp_deck;
+    CardStats stats = tmp_deck.generateCardStats(type);
+    return context->textures_[stats.textureKey];
+}
+sf::Texture& GameManager::getTexture(std::string tex){
+    return context->textures_[tex];
+}
+
 
 void GameManager::initVisualSlots(const sf::Texture& slotTex) {
     visualSlots_.clear();
@@ -141,6 +161,7 @@ bool GameManager::placeCard(Card* card, int row, int col) {
     deployedCards_.push_back(card);
 
     return true;
+
 }
 
 void GameManager::removeDeployedCard(Card* card) {
@@ -180,24 +201,29 @@ bool GameManager::handleBoardClick(sf::Vector2f mousePos) {
         if (vs.sprite.getGlobalBounds().contains(mousePos)) {
 
             if (vs.row != 1) {
-                std::cout << "Nie mozesz zagrac karty na strone przeciwnika!\n";
+                GameLog::add("Nie mozesz zagrac karty na strone przeciwnika!");
                 return false;
             }
 
             if (!battleEngine_.isSlotEmpty(vs.row, vs.col)) {
-                std::cout << "Ten slot jest zajety przez inna karte!\n";
+                GameLog::add("Ten slot jest zajety przez inna karte!");
                 return false;
             }
 
             Player* player = battleEngine_.player;
 
-            // Wywołujemy odchudzone tryPlayCard bez przekazywania wektora par
             bool success = tryPlayCard(*player, selectedCard, vs.row, vs.col);
 
             if (success) {
                 std::cout << "Zagrano karte na slot [" << vs.row << ", " << vs.col << "]\n";
+
+                if (selectedCard != nullptr && selectedCard->costType_ == CostType::BONES) {
+                    bones -= selectedCard->getCost();
+                }
+
                 selectedCard->setSelected(false);
                 selectedCard = nullptr;
+
                 return true;
             }
         }
@@ -283,6 +309,7 @@ Card* GameManager::BuildCard(const CardStats& stats,
         costText->after = " Blood";
     else
         costText->after = " Bones";
+
 
     return c;
 
