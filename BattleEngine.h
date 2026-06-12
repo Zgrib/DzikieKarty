@@ -10,7 +10,8 @@ enum class BattleState {
     START_PHASE,     // Przygotowanie do walki
     CARD_PROCESSING, // Aktywacja konkretnej karty (zadawanie obrażeń)
     COOLDOWN,        // Krótka pauza (np. 0.5 sekundy), aby gracz zauważył co się stało
-    END_PHASE        // Sprzątanie po turze, oddanie ruchu
+    END_PHASE,        // Sprzątanie po turze, oddanie ruchu
+    BATTLE_OVER
 };
 class GameManager;
 class BattleEngine{
@@ -28,7 +29,9 @@ public:
 
 
     BattleState currentState = BattleState::IDLE;
-
+    BattleState getCurrentState(){
+        return currentState;
+    }
     // Surowa tablica kart z Twojego kodu (zakładam 4 kolumny, 2 rzędy)
 
     // Zmienne do śledzenia kroku symulacji
@@ -47,7 +50,7 @@ public:
 
 
     BattleEngine(){
-
+        currentState = BattleState::IDLE;
         for(auto& v:board){
             for(auto& ptr:v){
                 ptr=nullptr;

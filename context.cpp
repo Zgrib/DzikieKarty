@@ -43,6 +43,7 @@ void Context::load_textures() {
         textures_.emplace(key, std::move(tex));
     }
 }
+
 void Context::load_fonts(){
     const std::vector<std::pair<std::string, std::string>> files = {
         {"papyrus", "resources/papyrus.ttf"} // .ttf
@@ -116,6 +117,8 @@ void Context::window_loop(sf::RenderWindow &window){
         // clear the window with black color
         // poco kurka wonda wiece po ang pisać opisy, jesteśmy w polsce a i tak ponmiżej piszesz po polsku jeden z drugim
         // i to nie tak że ktoś czegoś nie rozumie bo biegle mówie
+
+        //womp womp
         window.clear(sf::Color::Red);
 
         // draw everything here...
@@ -137,17 +140,50 @@ void Context::window_loop(sf::RenderWindow &window){
     }
 }
 
-void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
+void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
     while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed){
+        if (event.type == sf::Event::Closed) {
             window.close();
         }
 
         // REAKCJA NA KLIKNIĘCIE MYSZKĄ
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+            sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
 
             if (scene_ == 1) {
+                bool isBattleOver = (manager_->getBattleEngine().getCurrentState() == BattleState::BATTLE_OVER);
+
+                // =================================================================
+                // 1. NAJPIERW OBSŁUGUJEMY PRZYCISKI (Zarówno w trakcie gry, jak i na jej końcu)
+                // =================================================================
+                bool buttonClicked = false;
+                for (Button* btn : battle_buttons_) {
+                    // Sprawdzamy TYLKO widoczne przyciski i czy mysz się na nich znajduje
+                    if (btn->isVisible() && btn->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+                        btn->update(mappedMousePos, true);
+                        buttonClicked = true;
+                        break; // Znaleziono kliknięty przycisk, wychodzimy z pętli for
+                    }
+                }
+
+                // Jeśli kliknięto jakikolwiek widoczny przycisk, kończymy to zdarzenie myszy
+                if (buttonClicked) {
+                    continue;
+                }
+
+                // =================================================================
+                // 2. BLOKADA KOŃCA BITWY
+                // =================================================================
+                // Jeśli bitwa się skończyła, a gracz kliknął w tło (nie w przycisk),
+                // całkowicie ignorujemy resztę logiki (ofiary, planszę, rękę).
+                if (isBattleOver) {
+                    continue;
+                }
+
+                // =================================================================
+                // 3. LOGIKA AKTYWNEJ ROZGRYWKI (Wykonuje się tylko, gdy !isBattleOver)
+                // =================================================================
                 bool sacrificeClicked = false;
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0) {
                     int requiredCost = manager_->selectedCard->getCost();
@@ -173,25 +209,17 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
                                 if (manager_->cardsToSacrifice.size() == static_cast<size_t>(requiredCost)) {
                                     std::cout << "Osiagnieto wymagany koszt! Karty natychmiastowo znikaja.\n";
 
-                                    // Usuwamy fizycznie i logicznie wszystkie zaznaczone karty
                                     for (Card* deadCard : manager_->cardsToSacrifice) {
-                                        // 1. Szukamy jej pozycji w silniku bitwy i usuwamy wskaźnik
                                         for (int boardCol = 0; boardCol < 4; ++boardCol) {
                                             if (manager_->getBattleEngine().board[boardCol][1] == deadCard) {
                                                 manager_->getBattleEngine().board[boardCol][1] = nullptr;
                                                 break;
                                             }
                                         }
-                                        // 2. Usuwamy z wektora rysowania GameManager
                                         manager_->removeDeployedCard(deadCard);
-
-                                        // 3. Zwalniamy pamięć
                                         delete deadCard;
                                     }
-
-                                    // Zostawiamy listę pustą, ale możemy ustawić flagę w managerze, że koszt został opłacony!
                                     manager_->cardsToSacrifice.clear();
-                                    // Opcjonalnie: manager_->isCostPaid = true; (jeśli chcesz zablokować ponowne sprawdzanie kosztu)
                                 }
                             }
                             sacrificeClicked = true;
@@ -204,35 +232,30 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
                     continue;
                 }
 
-
                 bool boardClicked = manager_->handleBoardClick(mousePos);
                 if (boardClicked) {
                     continue;
                 }
 
-
-
-                // 2. Obsługa wyboru karty z ręki
+                // Obsługa wyboru karty z ręki
                 Player* player = manager_->getBattleEngine().player;
                 if (player != nullptr) {
                     for (Card* card : player->hand) {
                         if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
 
-                            if(manager_->canDraw==true){
+                            if (manager_->canDraw == true) {
                                 GameLog::add("Najpierw dobierz karte!");
                                 continue;
                             }
 
-                            // Jeśli klikałeś już inną kartę, przywróć ją na dół
                             if (manager_->selectedCard != nullptr && manager_->selectedCard != card) {
                                 manager_->selectedCard->setSelected(false);
-                                player->updateHandPositions(); // Resetuje pozycje pionowe
+                                player->updateHandPositions();
                             }
 
                             manager_->selectedCard = card;
                             manager_->cardsToSacrifice.clear();
 
-                            // Unosimy kartę (tylko raz przy kliknięciu)
                             card->setPosition(card->getPosition().x, window.getSize().y - card->getGlobalBounds().height - 70.f);
                             card->setSelected(true);
                             std::cout << "Zaznaczono karte z reki!\n";
@@ -240,27 +263,8 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
                         }
                     }
                 }
-            }
+            } // scene_ == 1
         }
-
-/*       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
-           window.close();
-       for(Button* ptr: menu_buttons_){
-           ptr->update(sf::Vector2i(0,0),false);
-       }
-                   if (event.type == sf::Event::MouseButtonPressed) {
-                       if(event.mouseButton.button == sf::Mouse::Left) {
-                           sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
-                           for(Button* ptr: menu_buttons_){
-                               ptr->update(mouse_pos,true);
-                           }
-                       }
-
-                               sf::Vector2i currentMousePos = sf::Mouse::getPosition(window);
-                               bool isLeftPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-                               Button1->update(currentMousePos, isLeftPressed);
-                               // TEST PRZYCISKU
-   }*/
     }
 }
 
@@ -347,48 +351,6 @@ void Context::start_battleground(sf::RenderWindow &window){
 
 
 
-    //delete this button later
-    Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
-    quit->setPosition(1800,50);
-    quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
-    battle_buttons_.emplace_back(quit);
-
-
-    Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
-    endTurn->setPosition(200,700);
-    endTurn->setOnClickAction([this](){
-        if(manager_->canDraw==true){
-            GameLog::add("Najpierw dobierz karte!");
-
-        }
-        else{
-
-            if (manager_->selectedCard != nullptr) {
-                //Wyłączamy flagę zaznaczenia w obiekcie karty
-                manager_->selectedCard->setSelected(false);
-                //Zerujemy wskaźnik w managerze
-                manager_->selectedCard = nullptr;
-                //Czyścimy potencjalne niedokończone ofiary, jeśli jakieś wisiały
-                for (Card* c : manager_->cardsToSacrifice) {
-                    c->setSacrificeHighlight(false);
-                }
-                manager_->cardsToSacrifice.clear();
-                //Przywracamy karty na ręce na ich domyślne pozycje (pionowo i poziomo)
-                Player* player = manager_->getBattleEngine().player;
-                if (player != nullptr) {
-                    player->updateHandPositions();
-                }
-            }
-
-
-            std::cout << "Koniec tury! Odpalam silnik...\n";
-            GameLog::add("-> koniec tury");
-            manager_->getBattleEngine().EndTurn();
-
-        }
-
-    });
-    battle_buttons_.emplace_back(endTurn);
     std::cout << "Test/n";
 
     background->setTexture(textures_["Battleground"]);
@@ -437,6 +399,50 @@ void Context::start_battleground(sf::RenderWindow &window){
     manager_->cardCounter = deckCounter;
 
 
+    // //delete this button later
+    // Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
+    // quit->setPosition(1800,50);
+    // quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
+    // battle_buttons_.emplace_back(quit);
+
+
+    Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
+    endTurn->setPosition(200,700);
+    endTurn->setOnClickAction([this](){
+        if(manager_->canDraw==true){
+            GameLog::add("Najpierw dobierz karte!");
+
+        }
+        else{
+
+            if (manager_->selectedCard != nullptr) {
+                //Wyłączamy flagę zaznaczenia w obiekcie karty
+                manager_->selectedCard->setSelected(false);
+                //Zerujemy wskaźnik w managerze
+                manager_->selectedCard = nullptr;
+                //Czyścimy potencjalne niedokończone ofiary, jeśli jakieś wisiały
+                for (Card* c : manager_->cardsToSacrifice) {
+                    c->setSacrificeHighlight(false);
+                }
+                manager_->cardsToSacrifice.clear();
+                //Przywracamy karty na ręce na ich domyślne pozycje (pionowo i poziomo)
+                Player* player = manager_->getBattleEngine().player;
+                if (player != nullptr) {
+                    player->updateHandPositions();
+                }
+            }
+
+
+            std::cout << "Koniec tury! Odpalam silnik...\n";
+            GameLog::add("-> koniec tury");
+            manager_->getBattleEngine().EndTurn();
+
+        }
+
+    });
+    battle_buttons_.emplace_back(endTurn);
+
+
     // PRZYCISK 1: Dobieranie z Talii
     Button* drawCardBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz karte",&window);
     drawCardBtn->setPosition(50.f, 960.f);
@@ -455,6 +461,15 @@ void Context::start_battleground(sf::RenderWindow &window){
     });
     battle_buttons_.emplace_back(drawCardBtn);
 
+
+    endBattleButton_ = new Button(5, textures_["button"], textures_["button_pressed"], fonts_["papyrus"], "Zakoncz bitwe", &window);
+    endBattleButton_->setPosition(1920/2.f -50, 100.f);
+    endBattleButton_->setScale(1.2,1.2);
+    endBattleButton_->setOnClickAction([this]() {
+        scene_ = 2;
+    });
+    endBattleButton_->setVisible(false);
+    battle_buttons_.emplace_back(endBattleButton_);
 
 
     Button* squirrelBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz wiewiorke",&window);
@@ -496,12 +511,38 @@ void Context::battleground(sf::RenderWindow &window){
     for(CustomDrawable* ptr: battle_drawables_){
         ptr->Draw();
     }
-    for(CustomDrawable* ptr: battle_buttons_){
-        ptr->Draw();
+    bool isBattleOver = (manager_->getBattleEngine().getCurrentState() == BattleState::BATTLE_OVER);
+
+
+    for (Button* btn : battle_buttons_) {
+        if (isBattleOver) {
+
+            if (btn == endBattleButton_) {
+                btn->setVisible(true);
+            } else {
+                btn->setVisible(false);
+            }
+        } else {
+
+            if (btn == endBattleButton_) {
+                btn->setVisible(false);
+            } else {
+                btn->setVisible(true);
+            }
+        }
     }
+
+
     sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
     sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
     for (Button* btn : battle_buttons_) btn->update(mappedMousePos, isPressed);
+
+    for(Button* ptr: battle_buttons_){
+        if(ptr->isVisible())
+            ptr->Draw();
+        else continue;
+    }
+
 
 }

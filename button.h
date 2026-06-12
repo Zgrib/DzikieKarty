@@ -21,6 +21,7 @@ private:
     sf::Color hoverColor;
     const sf::Texture* normalTexture;
     const sf::Texture* pressedTexture;
+    bool isVisible_ = true;
 
 public:
     Button(int z, const sf::Texture& texNormal, const sf::Texture& texPressed, const sf::Font& font, const std::string& text,sf::RenderWindow *_window);
@@ -28,6 +29,10 @@ public:
     void setOnClickAction(std::function<void()> action);
 
     void update(sf::Vector2i mousePos, bool isMousePressed);
+
+    void setVisible(bool visible);
+    bool isVisible() const;
+    std::string getTextString() const;
 
     virtual void Draw() override;
 };

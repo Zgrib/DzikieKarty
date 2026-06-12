@@ -23,8 +23,8 @@ void GameManager::initVisualSlots(const sf::Texture& slotTex) {
     visualSlots_.clear();
     if (board_ == nullptr) return;
 
-    // Pobieramy wymiary siatki z planszy
-    int rows = 2; // Zgodnie z Twoim board_ = new GameBoard(..., 2, 4);
+
+    int rows = 2;
     int cols = 4;
 
     for (int r = 0; r < rows; ++r) {
@@ -48,6 +48,8 @@ void GameManager::initVisualSlots(const sf::Texture& slotTex) {
 
             float paddingX = (slotW - (texW * vs.sprite.getScale().x)) / 2.f;
             float paddingY = (slotH - (texH * vs.sprite.getScale().y)) / 2.f;
+            if(r==1) paddingY -=80;
+            else paddingY +=80;
 
             vs.sprite.setPosition(pos.x + paddingX, pos.y + paddingY);
             visualSlots_.push_back(vs);
@@ -70,21 +72,29 @@ EnemyAI& GameManager::getAI(){
 
 
 void GameManager::cleanupDeadCards() {
+    for (int c = 0; c < 4; ++c) {
+        for (int r = 0; r < 2; ++r) {
+            Card* cardOnBoard = battleEngine_.board[c][r];
+            if (cardOnBoard != nullptr && cardOnBoard->getHealth() <= 0) {
+                battleEngine_.board[c][r] = nullptr; // Pole jest teraz bezpiecznie puste
+            }
+        }
+    }
 
+    // 2. Dopiero teraz bezpiecznie usuwamy obiekty z pamięci RAM i z wektora deployedCards_
     for (Card* card : deployedCards_) {
         if (card != nullptr && card->getHealth() <= 0) {
-            delete card;
+            delete card; // Fizyczne zwolnienie pamięci
         }
     }
 
     deployedCards_.erase(
         std::remove_if(deployedCards_.begin(), deployedCards_.end(),
-               [](Card* card)
-                    {
-                       return card == nullptr || card->getHealth() <= 0;
-                    }
-               ),
-            deployedCards_.end()
+                       [](Card* card) {
+                           return card == nullptr || card->getHealth() <= 0;
+                       }
+                       ),
+        deployedCards_.end()
         );
 }
 
@@ -215,7 +225,6 @@ void GameManager::drawBoardElements() {
 }
 
 
-
 Card* GameManager::BuildCard(int _damage, int _health,std::string _name, int _cost, CostType _ct,
                 const sf::Texture& _texture, const sf::Texture& _background,
                 const sf::Font& _font, sf::RenderWindow &window, int z=0)
@@ -284,7 +293,6 @@ Card* GameManager::BuildCard(int _damage, int _health,std::string _name, int _co
 }
 
 
-
 Card* GameManager::cloneCard(const Card* c){
     // Zamiast polegać na wskaźnikach wyciąganych z surowej karty, które mogą być uszkodzone,
     // wyciągamy referencję do okna oraz sprawdzamy tekstury.
@@ -311,7 +319,6 @@ Card* GameManager::cloneCard(const Card* c){
 
     return newClone;
 }
-
 
 
 GameBoard* GameManager::getBoard() const {

@@ -1,7 +1,7 @@
 #include "button.h"
 
 Button::Button(int z, const sf::Texture& texNormal, const sf::Texture& texPressed, const sf::Font& font, const std::string& text,sf::RenderWindow *_window)
-    : Interactive(z,_window), state(Normal)
+    : Interactive(z,_window), state(Normal), isVisible_(true)
 {
     normalTexture = &texNormal;
     pressedTexture = &texPressed;
@@ -34,8 +34,24 @@ void Button::setOnClickAction(std::function<void()> action)
     onClickAction = action;
 }
 
+void Button::setVisible(bool visible)
+{
+    isVisible_ = visible;
+}
+
+bool Button::isVisible() const
+{
+    return isVisible_;
+}
+
+std::string Button::getTextString() const
+{
+    return buttonText.getString().toAnsiString();
+}
+
 void Button::update(sf::Vector2i mousePos, bool isMousePressed)
 {
+    if (!isVisible_) return;
     if (contains(mousePos))
     {
         if (isMousePressed)

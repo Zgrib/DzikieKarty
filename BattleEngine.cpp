@@ -43,6 +43,10 @@ void BattleEngine::update(float deltaTime) {
             manager_->cleanupDeadCards();
         }
 
+        if (currentProcessCol < 0 || currentProcessCol >= 4 || currentProcessRow < 0 || currentProcessRow >= 2) {
+            currentState = BattleState::END_PHASE;
+            return;
+        }
 
         // POPRAWKA: Indeksowanie [col][row] zgodnie z Twoją deklaracją board[4][2]
         Card* activeCard = board[currentProcessCol][currentProcessRow];
@@ -86,11 +90,19 @@ void BattleEngine::update(float deltaTime) {
                 if(abs(player->damageTaken - eai->damageTaken)>=5){
                     //battle has to end
                     if(player->damageTaken > eai->damageTaken){
+                        GameLog::add("PRZEGRANA! Koniec bitwy.");
                         //player loses
+                        //TUTAJ powinna konczyc sie bitwa!!
                     }
                     else{
+                        GameLog::add("WYGRANA! Koniec bitwy.");
                         //player wins
+                        //TUTAJ powinna konczyc sie bitwa!!
                     }
+                    EndBattle();
+                    manager_->canDraw = false;
+                    currentState = BattleState::BATTLE_OVER; // <--- Aktywacja stanu końca
+                    return;
 
                 }
 
@@ -103,6 +115,8 @@ void BattleEngine::update(float deltaTime) {
             } else {
                 currentState = BattleState::CARD_PROCESSING;
             }
+
+            return;
         }
 
 
@@ -118,6 +132,20 @@ void BattleEngine::update(float deltaTime) {
             currentProcessCol++;
 
             if (currentProcessCol >= 4) {
+
+                // === DRUGIE MIEJSCE: SPRAWDZENIE KOŃCA BITWY (Gdy karta zaatakowała i cooldown minął) ===
+                if (abs(player->damageTaken - eai->damageTaken) >= 5) {
+                    if (player->damageTaken > eai->damageTaken) {
+                        GameLog::add("PRZEGRANA! Koniec bitwy.");
+                    } else {
+                        GameLog::add("WYGRANA! Koniec bitwy.");
+                    }
+                    EndBattle();
+                    manager_->canDraw = false;
+                    currentState = BattleState::BATTLE_OVER; // <--- Aktywacja stanu końca
+                    return;
+                }
+
                 currentProcessCol = 0; // Resetujemy kolumnę do lewej krawędzi
                 currentProcessRow--;   // <--- IDZIEMY W GÓRĘ (z row=1 przechodzimy na row=0)
             }
@@ -150,6 +178,10 @@ void BattleEngine::update(float deltaTime) {
             manager_->cleanupDeadCards();
         }
         currentState = BattleState::IDLE; // Powrót do oczekiwania na gracza
+        break;
+
+
+    case BattleState::BATTLE_OVER:
         break;
     }
 }

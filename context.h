@@ -11,6 +11,7 @@
 class Context
 {
 private:
+    Button* endBattleButton_ = nullptr;
     void load_textures();
     void load_fonts();
     void events_loop(sf::RenderWindow &window, sf::Event &event);
