@@ -6,6 +6,7 @@ CONFIG -= qt
 SOURCES += main.cpp \
     BattleEngine.cpp \
     Card.cpp \
+    GameLog.cpp \
     GameManager.cpp \
     GameThread.cpp \
     Interface.cpp \

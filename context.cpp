@@ -1,5 +1,6 @@
 #include "context.h"
 #include "button.h"
+#include "GameLog.h"
 #include <iostream>
 
 Context::Context()
@@ -113,6 +114,8 @@ void Context::window_loop(sf::RenderWindow &window){
         Context::events_loop(window,event);
 
         // clear the window with black color
+        // poco kurka wonda wiece po ang pisać opisy, jesteśmy w polsce a i tak ponmiżej piszesz po polsku jeden z drugim
+        // i to nie tak że ktoś czegoś nie rozumie bo biegle mówie
         window.clear(sf::Color::Red);
 
         // draw everything here...
@@ -145,10 +148,7 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
             if (scene_ == 1) {
-                // 1. Sprawdzamy przyciski bitwy (Wyjdź, Dobierz itp.)
                 for (Button* btn : battle_buttons_) {
-                    // Zakładam, że Twoja klasa Button ma mechanizm update/kliknięcia podobny do menu
-                    // btn->update(sf::Mouse::getPosition(window), true);
                 }
                 bool sacrificeClicked = false;
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0) {
@@ -318,6 +318,7 @@ void Context::start_battleground(sf::RenderWindow &window){
     endTurn->setPosition(200,700);
     endTurn->setOnClickAction([this](){
         std::cout << "Koniec tury! Odpalam silnik...\n";
+        GameLog::add("-> koniec tury");
         manager_->getBattleEngine().EndTurn();
     });
     battle_buttons_.emplace_back(endTurn);
@@ -344,6 +345,15 @@ void Context::start_battleground(sf::RenderWindow &window){
     rightPanel->setScale((float)window.getSize().x*0.25/(float)textures_["chat"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["chat"].getSize().y);
     battle_drawables_.emplace_back(rightPanel);
 
+    // tworzymy gamelog i wrzucamy do drawables bitwy
+    GameLog* logger = new GameLog(fonts_["papyrus"], &window);
+    battle_drawables_.emplace_back(logger);
+
+    // testowy log na start
+    GameLog::add("bitwa rozpoczeta!");
+    GameLog::add("powodzenia.");
+
+
     bottomPanel->setTexture(textures_["deck"]);
     bottomPanel->setOrigin(0,textures_["deck"].getSize().y);
     bottomPanel->setPosition(0,window.getSize().y);
@@ -366,6 +376,7 @@ void Context::start_battleground(sf::RenderWindow &window){
     drawCardBtn->setOnClickAction([this]() {
         // Dobieramy kartę z talii bitewnej
         manager_->getBattleEngine().player->drawCard();
+        GameLog::add("-> karta zostala dobrana");
     });
     battle_buttons_.emplace_back(drawCardBtn);
 
@@ -388,6 +399,7 @@ void Context::start_battleground(sf::RenderWindow &window){
             );
 
         manager_->getBattleEngine().player->drawSquirrel(squirrel);
+        GameLog::add("-> wiewiorka zostala dobrana");
 
         std::cout << "Wygenerowano w pelni funkcjonalna Wiewiorke na rece!\n";
     });
