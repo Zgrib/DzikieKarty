@@ -20,20 +20,20 @@ private:
     void window_loop(sf::RenderWindow &window);
     int scene_=0;
 
-    std::map<std::string, sf::Font> fonts_;
     std::vector<Button*> menu_buttons_;
     std::vector<CustomDrawable*> menu_drawables_;
-    std::map<std::string, sf::Texture> textures_;
 
     std::vector<CustomDrawable*> battle_drawables_;
     std::vector<Button*> battle_buttons_;
     void start_battleground(sf::RenderWindow &window);
     void battleground(sf::RenderWindow &window);
 
-    GameManager* manager_;
 
 
 public:
+    std::map<std::string, sf::Font> fonts_;
+    std::map<std::string, sf::Texture> textures_;
+    GameManager* manager_;
     Context();
     void start_context();
 };

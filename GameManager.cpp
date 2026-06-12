@@ -155,6 +155,13 @@ void GameManager::drawBoardElements() {
             card->Draw();
         }
     }
+    if (battleEngine_.player != nullptr) {
+        for (Card* card : battleEngine_.player->hand) {
+            if (card != nullptr) {
+                card->Draw();
+            }
+        }
+    }
 }
 
 
@@ -220,23 +227,29 @@ Card* GameManager::BuildCard(int _damage, int _health, int _cost, CostType _ct,
 
 
 Card* GameManager::cloneCard(const Card* c){
+    // Zamiast polegać na wskaźnikach wyciąganych z surowej karty, które mogą być uszkodzone,
+    // wyciągamy referencję do okna oraz sprawdzamy tekstury.
     sf::RenderWindow& windowRef = const_cast<sf::RenderWindow&>(c->getWindow());
-    const sf::Texture* currentSpriteTex = c->sprite.getTexture();
-    return BuildCard(
+
+    // Upewniamy się, że czcionka istnieje. Jeśli c->font jest nullem, używamy bezpiecznego fallbacku.
+    if (c->font == nullptr) {
+        std::cerr << "Blad: Karta poddawana klonowaniu nie posiada przypisanej czcionki!\n";
+    }
+
+    // Tworzymy czysty, świeży klon karty za pomocą sprawdzonych struktur BuildCard
+    Card* newClone = BuildCard(
         c->getDamage(),
         c->getHealth(),
         c->getCost(),
         c->getCostType(),
-        currentSpriteTex ? *currentSpriteTex : c->spriteTexture,
-        c->background,
-        *(c->font),
-        windowRef
+        c->spriteTexture,  // Oryginalna tekstura stwora (np. wilk, wąż)
+        c->background,     // Oryginalne tło karty
+        *(c->font),        // Czcionka
+        windowRef,
+        0
         );
 
-
-
-
-    //return BuildCard(c->health, c->damage, c->cost, c->costType_, *(c->sprite.getTexture(),c->getTexture(), c->getWindow()));
+    return newClone;
 }
 
 

@@ -129,3 +129,13 @@ void BattleEngine::update(float deltaTime) {
         break;
     }
 }
+
+void BattleEngine::EndBattle(){
+    player->endBattleCleanup();
+    for (int c = 0; c < 4; ++c) {
+        for (int r = 0; r < 2; ++r) {
+            manager_->getBattleEngine().board[c][r] = nullptr;
+        }
+    }
+
+}

@@ -37,6 +37,16 @@ public:
         sprite.setTexture(_texture);
     }
 
+    Card(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow* window, int z=0): Interactive(z, window){
+        health = _health;
+        damage = _damage;
+        cost = _cost;
+        costType_ = _ct;
+        sprite.setTexture(_texture);
+    }
+
+    Card* clone() const;
+
     ~Card() override {}
 
     int getHealth() const{

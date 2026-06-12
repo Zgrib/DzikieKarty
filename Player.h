@@ -2,7 +2,8 @@
 #define PLAYER_H
 #include <vector>
 #include "Card.h"
-
+class GameManager;
+class Context;
 
 class Player{
 private:
@@ -16,14 +17,21 @@ public:
 
 
     Player(){}
-    void prepareForBattle();
-    void drawCard();
+    void prepareForBattle(GameManager* manager);
+    bool drawCard();
     void updateHandPositions();
+    void initializeDeck(Context* manager, sf::RenderWindow& window);
+    void endBattleCleanup();
 
+    void drawSquirrel(Card* squirrelCard);
 
     ~Player() {
-        for (auto* c : deck) delete c;
-        deck.clear();
+        for (Card* c : permanentDeck) {
+            if (c != nullptr) {
+                delete c;
+            }
+        }
+        permanentDeck.clear();
     }
     int damageTaken=0;
 

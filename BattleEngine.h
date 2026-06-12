@@ -66,7 +66,7 @@ public:
                 ptr=nullptr;
             }
         }
-        player->prepareForBattle();
+        player->prepareForBattle(manager_);
         //eai prepare
     }
 

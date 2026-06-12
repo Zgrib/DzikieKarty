@@ -80,6 +80,8 @@ void Context::start_context() {
     Context::start_main_menu(window);
     Context::start_battleground(window);
 
+    manager_->getBattleEngine().player->initializeDeck(this, window);
+    manager_->getBattleEngine().player->prepareForBattle(manager_);
     //manager test!!
     Card* card = manager_->BuildCard(2,5,2,CostType::BLOOD,textures_["raven"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card,0,0);
@@ -119,20 +121,12 @@ void Context::window_loop(sf::RenderWindow &window){
             manager_->getBattleEngine().update(deltaTime);
             Context::battleground(window);
             manager_->drawBoardElements();
+
+            size_t cardsLeft = manager_->getBattleEngine().player->battleDeck.size();
+            manager_->cardCounter->text->setString("Talia: " + std::to_string(cardsLeft) + " kart");
         }
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
 
 
-        for (Card* card : manager_->getBattleEngine().player->hand) {
-            if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                manager_->selectedCard = card;
-                manager_->cardsToSacrifice.clear(); // Resetujemy poprzednie ofiary
-                // Wizualne wyróżnienie karty (np. uniesienie jej lekko w górę)
-                card->setPosition(card->getPosition().x, card->getPosition().y - 30.f);
-                card->setSelected(true);
-                break;
-            }
-        }
         // end the current frame
         window.display();
     }
@@ -140,11 +134,46 @@ void Context::window_loop(sf::RenderWindow &window){
 
 void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
     while (window.pollEvent(event)) {
-        // "close requested" event: we close the window
         if (event.type == sf::Event::Closed){
             window.close();
         }
 
+        // REAKCJA NA KLIKNIĘCIE MYSZKĄ
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+            sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+            if (scene_ == 1) {
+                // 1. Sprawdzamy przyciski bitwy (Wyjdź, Dobierz itp.)
+                for (Button* btn : battle_buttons_) {
+                    // Zakładam, że Twoja klasa Button ma mechanizm update/kliknięcia podobny do menu
+                    // btn->update(sf::Mouse::getPosition(window), true);
+                }
+
+                // 2. Obsługa wyboru karty z ręki
+                Player* player = manager_->getBattleEngine().player;
+                if (player != nullptr) {
+                    for (Card* card : player->hand) {
+                        if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+
+                            // Jeśli klikałeś już inną kartę, przywróć ją na dół
+                            if (manager_->selectedCard != nullptr && manager_->selectedCard != card) {
+                                manager_->selectedCard->setSelected(false);
+                                player->updateHandPositions(); // Resetuje pozycje pionowe
+                            }
+
+                            manager_->selectedCard = card;
+                            manager_->cardsToSacrifice.clear();
+
+                            // Unosimy kartę (tylko raz przy kliknięciu)
+                            card->setPosition(card->getPosition().x, window.getSize().y - card->getGlobalBounds().height - 70.f);
+                            card->setSelected(true);
+                            std::cout << "Zaznaczono karte z reki!\n";
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
 /*       if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
            window.close();
@@ -257,7 +286,47 @@ void Context::start_battleground(sf::RenderWindow &window){
     bottomPanel->setScale((float)window.getSize().x/(float)textures_["deck"].getSize().x, (float)window.getSize().y*0.3/(float)textures_["deck"].getSize().y);
     battle_drawables_.emplace_back(bottomPanel);
 
+    CustomTextDrawable* deckCounter = new CustomTextDrawable();
+    deckCounter->text->setFont(fonts_["papyrus"]);
+    deckCounter->text->setCharacterSize(30);
+    deckCounter->text->setFillColor(sf::Color::White);
+    deckCounter->text->setPosition(50.f, 900.f); // Pozycja w lewym dolnym rogu ekranu
+    battle_drawables_.emplace_back(deckCounter);
+    manager_->cardCounter = deckCounter;
 
+
+    // PRZYCISK 1: Dobieranie z Talii
+    Button* drawCardBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz karte",&window);
+    drawCardBtn->setPosition(50.f, 960.f);
+    drawCardBtn->setOnClickAction([this]() {
+        // Dobieramy kartę z talii bitewnej
+        manager_->getBattleEngine().player->drawCard();
+    });
+    battle_buttons_.emplace_back(drawCardBtn);
+
+
+
+    Button* squirrelBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz wiewiorke",&window);
+    squirrelBtn->setPosition(320.f, 960.f);
+    squirrelBtn->setOnClickAction([this, &window]() {
+        // Generujemy kartę przez GameManager, aby miała wszystkie teksty, ramki i przypisane okno!
+        Card* squirrel = manager_->BuildCard(
+            0,                 // Atak
+            1,                 // HP
+            0,                 // Koszt
+            CostType::BLOOD,
+            textures_["squirel"], // Poprawiłem literówkę z Twojego load_textures ("squirel")
+            textures_["card"],
+            fonts_["papyrus"],
+            window,
+            0
+            );
+
+        manager_->getBattleEngine().player->drawSquirrel(squirrel);
+
+        std::cout << "Wygenerowano w pelni funkcjonalna Wiewiorke na rece!\n";
+    });
+    battle_buttons_.emplace_back(squirrelBtn);
 
     std::sort(battle_drawables_.begin(), battle_drawables_.end(), [](  CustomDrawable* a,   CustomDrawable* b){ return (a->getZ() < b->getZ());});
     for(CustomDrawable* ptr: battle_drawables_){

@@ -20,7 +20,9 @@ private:
 
 
 
+
 public:
+    CustomTextDrawable* cardCounter=nullptr;
     Card* selectedCard=nullptr;
     std::vector<Card*> cardsToSacrifice;
 
