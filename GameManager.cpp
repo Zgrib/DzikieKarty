@@ -3,10 +3,8 @@
 #include <iostream>
 
 GameManager::GameManager(sf::RenderWindow& window)
-    : window_(window), board_(nullptr) {
+    : window_(window), board_(nullptr), selectedCard(nullptr) { // upewnij się, że inicjalizujesz selectedCard
 
-    // Obliczamy obszar zajmowany przez tło gry z Context.cpp:
-    // x od 25% do 75% szerokości ekranu, y zajmuje 70% wysokości ekranu
     float boardX = window_.getSize().x * 0.35f;
     float boardY = 0.f;
     float boardWidth = window_.getSize().x * 0.30f;
@@ -14,9 +12,45 @@ GameManager::GameManager(sf::RenderWindow& window)
 
     sf::FloatRect boardBounds(boardX, boardY, boardWidth, boardHeight);
 
+    // Twoja siatka ma 2 rzędy i 4 kolumny
     board_ = new GameBoard(boardBounds, 2, 4);
-
     battleEngine_.setGM(this);
+}
+
+void GameManager::initVisualSlots(const sf::Texture& slotTex) {
+    visualSlots_.clear();
+    if (board_ == nullptr) return;
+
+    // Pobieramy wymiary siatki z planszy
+    int rows = 2; // Zgodnie z Twoim board_ = new GameBoard(..., 2, 4);
+    int cols = 4;
+
+    for (int r = 0; r < rows; ++r) {
+        for (int c = 0; c < cols; ++c) {
+            VisualSlot vs;
+            vs.row = r;
+            vs.col = c;
+            vs.sprite.setTexture(slotTex);
+
+            // Pobieramy wyliczoną pozycję slotu z GameBoard
+            sf::Vector2f pos = board_->getSlotPosition(r, c);
+
+            // Centrujemy teksturę slotu wewnątrz komórki siatki
+            float slotW = board_->getSlotWidth();
+            float slotH = board_->getSlotHeight();
+            float texW = slotTex.getSize().x;
+            float texH = slotTex.getSize().y;
+
+            // Opcjonalne skalowanie, jeśli phSlot.png jest za duże/za małe:
+            // vs.sprite.setScale(slotW / texW, slotH / texH);
+
+            float paddingX = (slotW - (texW * vs.sprite.getScale().x)) / 2.f;
+            float paddingY = (slotH - (texH * vs.sprite.getScale().y)) / 2.f;
+
+            vs.sprite.setPosition(pos.x + paddingX, pos.y + paddingY);
+            visualSlots_.push_back(vs);
+        }
+    }
 }
 
 GameManager::~GameManager() {
@@ -85,71 +119,76 @@ bool GameManager::placeCard(Card* card, int row, int col) {
     return true;
 }
 
-// Plik: GameManager.cpp
+void GameManager::removeDeployedCard(Card* card) {
+    if (card == nullptr) return;
+    deployedCards_.erase(
+        std::remove_if(deployedCards_.begin(), deployedCards_.end(),
+                       [card](Card* c) { return c == card; }),
+        deployedCards_.end()
+        );
+}
 
-bool GameManager::tryPlayCard(Player& player, Card* card, int targetRow, int targetCol, const std::vector<std::pair<int, int>>& sacrifices) {
+
+bool GameManager::tryPlayCard(Player& player, Card* card, int targetRow, int targetCol) {
     if (card == nullptr || board_ == nullptr) return false;
 
-    // 1. Sprawdzenie, czy slot docelowy jest wolny
+    // Sprawdzenie, czy slot docelowy jest wolny
     if (!battleEngine_.isSlotEmpty(targetRow, targetCol)) {
         std::cout << "Ten slot jest juz zajety!\n";
         return false;
     }
 
-    // 2. Walidacja kosztu krwi (CostType::BLOOD)
-    int requiredCost = card->getCost(); // np. 0, 1, 2...
-
-    if (requiredCost > 0) {
-        // Sprawdzamy, czy gracz zaznaczył odpowiednią liczbę ofiar
-        if (sacrifices.size() < static_cast<size_t>(requiredCost)) {
-            std::cout << "Musisz wybrac wiecej kart do poswiecenia! Wymagane: " << requiredCost << "\n";
-            return false;
-        }
-
-        // Sprawdzamy, czy wybrane ofiary rzeczywiście należą do gracza (dolny rząd, czyli row = 1)
-        for (auto const& pos : sacrifices) {
-            int sCol = pos.first;
-            int sRow = pos.second;
-
-            if (sRow != 1) {
-                std::cout << "Mozesz poswiecac tylko wlasne karty z dolnego rzedu!\n";
-                return false;
-            }
-            if (battleEngine_.board[sCol][sRow] == nullptr) {
-                std::cout << "Jeden z wybranych slotow ofiarnych jest pusty!\n";
-                return false;
-            }
-        }
-
-        // --- PROCES POŚWIĘCENIA (Usuwanie starych kart) ---
-        for (auto const& pos : sacrifices) {
-            int sCol = pos.first;
-            int sRow = pos.second;
-            Card* deadCard = battleEngine_.board[sCol][sRow];
-
-            // Usuwamy logicznie z silnika
-            battleEngine_.board[sCol][sRow] = nullptr;
-
-            // Usuwamy z wektora renderowania GameManager i zwalniamy pamięć
-            deployedCards_.erase(std::remove(deployedCards_.begin(), deployedCards_.end(), deadCard), deployedCards_.end());
-            delete deadCard;
-        }
-    }
-
-    // 3. FIZYCZNE ZAGRANIE NOWEJ KARTY NA PLANSZĘ
-    // Korzystamy z napisanej wcześniej funkcji pozycjonowania siatki
+    // Ponieważ karty zostały usunięte natychmiast po kliknięciu w Context,
+    // tutaj po prostu pozwalamy na zagranie nowej karty!
     placeCard(card, targetRow, targetCol);
 
-    // 4. USUNIĘCIE KARTY Z RĘKI GRACZA
+    // Usunięcie z ręki gracza
     player.hand.erase(std::remove(player.hand.begin(), player.hand.end(), card), player.hand.end());
-    player.updateHandPositions(); // Przesuwamy pozostałe na ręce karty, żeby nie było dziur
+    player.updateHandPositions();
 
     return true;
 }
 
+bool GameManager::handleBoardClick(sf::Vector2f mousePos) {
+    if (selectedCard == nullptr) return false;
 
+    for (const auto& vs : visualSlots_) {
+        if (vs.sprite.getGlobalBounds().contains(mousePos)) {
+
+            if (vs.row != 1) {
+                std::cout << "Nie mozesz zagrac karty na strone przeciwnika!\n";
+                return false;
+            }
+
+            if (!battleEngine_.isSlotEmpty(vs.row, vs.col)) {
+                std::cout << "Ten slot jest zajety przez inna karte!\n";
+                return false;
+            }
+
+            Player* player = battleEngine_.player;
+
+            // Wywołujemy odchudzone tryPlayCard bez przekazywania wektora par
+            bool success = tryPlayCard(*player, selectedCard, vs.row, vs.col);
+
+            if (success) {
+                std::cout << "Zagrano karte na slot [" << vs.row << ", " << vs.col << "]\n";
+                selectedCard->setSelected(false);
+                selectedCard = nullptr;
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 void GameManager::drawBoardElements() {
+    for (const auto& vs : visualSlots_) {
+        if (battleEngine_.isSlotEmpty(vs.row, vs.col)) {
+            window_.draw(vs.sprite);
+        }
+    }
+
+
     for (Card* card : deployedCards_) {
         if (card != nullptr) {
             card->Draw();

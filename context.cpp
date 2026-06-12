@@ -76,6 +76,8 @@ void Context::start_context() {
     window.setFramerateLimit(60);
 
     manager_ = new GameManager(window);
+    manager_->initVisualSlots(textures_["phSlot"]);
+
 
     Context::start_main_menu(window);
     Context::start_battleground(window);
@@ -148,6 +150,68 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
                     // Zakładam, że Twoja klasa Button ma mechanizm update/kliknięcia podobny do menu
                     // btn->update(sf::Mouse::getPosition(window), true);
                 }
+                bool sacrificeClicked = false;
+                if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0) {
+                    int requiredCost = manager_->selectedCard->getCost();
+
+                    for (int c = 0; c < 4; ++c) {
+                        Card* cardOnBoard = manager_->getBattleEngine().board[c][1]; // rząd 1 = gracz
+                        if (cardOnBoard != nullptr && cardOnBoard->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+
+                            auto it = std::find(manager_->cardsToSacrifice.begin(), manager_->cardsToSacrifice.end(), cardOnBoard);
+
+                            if (it != manager_->cardsToSacrifice.end()) {
+                                // Odznaczenie karty
+                                cardOnBoard->setSacrificeHighlight(false);
+                                manager_->cardsToSacrifice.erase(it);
+                                std::cout << "Odznaczono karte z ofiary.\n";
+                            } else {
+                                // Zaznaczenie karty
+                                cardOnBoard->setSacrificeHighlight(true);
+                                manager_->cardsToSacrifice.push_back(cardOnBoard);
+                                std::cout << "Zaznaczono ofiare (" << manager_->cardsToSacrifice.size() << "/" << requiredCost << ")\n";
+
+                                // SPRAWDZAMY CZY MAMY JUŻ KOMPLET OFIAR
+                                if (manager_->cardsToSacrifice.size() == static_cast<size_t>(requiredCost)) {
+                                    std::cout << "Osiagnieto wymagany koszt! Karty natychmiastowo znikaja.\n";
+
+                                    // Usuwamy fizycznie i logicznie wszystkie zaznaczone karty
+                                    for (Card* deadCard : manager_->cardsToSacrifice) {
+                                        // 1. Szukamy jej pozycji w silniku bitwy i usuwamy wskaźnik
+                                        for (int boardCol = 0; boardCol < 4; ++boardCol) {
+                                            if (manager_->getBattleEngine().board[boardCol][1] == deadCard) {
+                                                manager_->getBattleEngine().board[boardCol][1] = nullptr;
+                                                break;
+                                            }
+                                        }
+                                        // 2. Usuwamy z wektora rysowania GameManager
+                                        manager_->removeDeployedCard(deadCard);
+
+                                        // 3. Zwalniamy pamięć
+                                        delete deadCard;
+                                    }
+
+                                    // Zostawiamy listę pustą, ale możemy ustawić flagę w managerze, że koszt został opłacony!
+                                    manager_->cardsToSacrifice.clear();
+                                    // Opcjonalnie: manager_->isCostPaid = true; (jeśli chcesz zablokować ponowne sprawdzanie kosztu)
+                                }
+                            }
+                            sacrificeClicked = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (sacrificeClicked) {
+                    continue;
+                }
+
+
+                bool boardClicked = manager_->handleBoardClick(mousePos);
+                if (boardClicked) {
+                    continue;
+                }
+
 
                 // 2. Obsługa wyboru karty z ręki
                 Player* player = manager_->getBattleEngine().player;

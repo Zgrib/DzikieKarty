@@ -12,6 +12,9 @@ enum CostType{
 };
 
 class Card: public Interactive{
+    bool isMarkedForSacrifice_ = false;
+
+
 public:
     sf::Texture spriteTexture;
     sf::Sprite sprite;
@@ -45,6 +48,9 @@ public:
         sprite.setTexture(_texture);
     }
 
+
+
+
     Card* clone() const;
 
     ~Card() override {}
@@ -64,6 +70,20 @@ public:
     const sf::RenderWindow& getWindow() const{
         return (*window);
     }
+
+
+    void setSacrificeHighlight(bool highlight) {
+        isMarkedForSacrifice_ = highlight;
+        if (isMarkedForSacrifice_) {
+            // Kolorujemy kartę na czerwono-krwisty odcień
+            this->setColor(sf::Color(255, 100, 100));
+        } else {
+            // Przywracamy domyślny, biały kolor (brak filtra)
+            this->setColor(sf::Color::White);
+        }
+    }
+
+    bool isMarkedForSacrifice() const { return isMarkedForSacrifice_;}
 
 
 //private:

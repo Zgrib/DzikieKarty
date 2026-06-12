@@ -18,6 +18,13 @@ private:
     // Lista kart aktualnie znajdujących się na planszy do renderowania
     std::vector<Card*> deployedCards_;
 
+    struct VisualSlot {
+        sf::Sprite sprite;
+        int row;
+        int col;
+    };
+    std::vector<VisualSlot> visualSlots_;
+    sf::Texture slotTexture_;
 
 
 
@@ -25,6 +32,7 @@ public:
     CustomTextDrawable* cardCounter=nullptr;
     Card* selectedCard=nullptr;
     std::vector<Card*> cardsToSacrifice;
+
 
     GameManager(sf::RenderWindow& window);
     ~GameManager();
@@ -34,6 +42,10 @@ public:
 
     // Wywoływane wewnątrz pętli rysowania w Context::battleground
     void drawBoardElements();
+
+    void initVisualSlots(const sf::Texture& tex);
+
+    bool handleBoardClick(sf::Vector2f mousePos);
 
     void cleanupDeadCards();
 
@@ -45,10 +57,12 @@ public:
 
     BattleEngine& getBattleEngine();
 
+    void removeDeployedCard(Card* card);
+
     // Gettery
     GameBoard* getBoard() const;
 
-    bool tryPlayCard(Player& player, Card* card, int targetRow, int targetCol, const std::vector<std::pair<int, int>>& sacrifices);
+    bool tryPlayCard(Player& player, Card* card, int targetRow, int targetCol);
 };
 
 #endif // GAMEMANAGER_H
