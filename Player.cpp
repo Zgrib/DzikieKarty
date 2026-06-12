@@ -7,7 +7,8 @@
 #include <iostream>
 
 void Player::addCard(const Card* c){
-    //deck.emplace_back(cloneCard(c));
+
+    deck.emplace_back(c->clone());
 }
 
 
