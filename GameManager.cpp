@@ -49,6 +49,11 @@ void GameManager::initVisualSlots(const sf::Texture& slotTex) {
             float paddingX = (slotW - (texW * vs.sprite.getScale().x)) / 2.f;
             float paddingY = (slotH - (texH * vs.sprite.getScale().y)) / 2.f;
 
+            if(r==1)
+                paddingY-=90;
+            else
+                paddingY+=90;
+
             vs.sprite.setPosition(pos.x + paddingX, pos.y + paddingY);
             visualSlots_.push_back(vs);
         }
