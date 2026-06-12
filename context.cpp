@@ -23,9 +23,9 @@ void Context::load_textures() {
         {"opos",       "resources/opos.png"},
         {"roach",       "resources/roach.png"},
         {"Battleground","resources/Battleground.png"},
-        {"deck",       "resources/Deck.png"},
+        {"deck",       "resources/deck.png"},
         {"chat",       "resources/chat.png"},
-        {"waga",       "resources/waga.png"},
+        {"waga",       "resources/Waga.png"},
         {"button",       "resources/Button.png"},
         {"button_pressed",       "resources/Button_pressed.png"},
         {"background",       "resources/background.png"},
@@ -291,12 +291,14 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
 void Context::start_main_menu(sf::RenderWindow &window){
         Button* btn_start=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"START",&window);
         btn_start->setPosition(1920/2.f, 400);
+        btn_start->setScale(2,2);
         btn_start->setOnClickAction([this](){scene_=1;});
         menu_buttons_.emplace_back(btn_start);
 
 
         Button* btn_quit=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
-        btn_quit->setPosition(1920/2.f, 600);
+        btn_quit->setPosition(1920/2.f, 500);
+        btn_quit->setScale(2,2);
         btn_quit->setOnClickAction([&window](){std::cout<<"Guzik"<<std::endl; window.close();});
         menu_buttons_.emplace_back(btn_quit);
 
@@ -483,7 +485,7 @@ void Context::start_battleground(sf::RenderWindow &window){
 
     std::cout << "Test/n";
 
-    background->setTexture(textures_["background-7"]);
+    background->setTexture(textures_["background-4"]);
     //background->setColor(sf::Color(200,141,60));
     background->setPosition((float)window.getSize().x*0.25,0);
     background->setScale((float)window.getSize().x*0.5/(float)textures_["background-5"].getSize().x, (float)window.getSize().y*0.7/(float)textures_["background-5"].getSize().y);
@@ -513,7 +515,7 @@ void Context::start_battleground(sf::RenderWindow &window){
     GameLog::add("Powodzenia.");
 
 
-    bottomPanel->setTexture(textures_["background"]);
+    bottomPanel->setTexture(textures_["deck"]);
     bottomPanel->setOrigin(0,textures_["deck"].getSize().y);
     bottomPanel->setPosition(0,window.getSize().y);
     //bottomPanel->setColor(sf::Color(250,181,100));
@@ -591,7 +593,7 @@ void Context::start_battleground(sf::RenderWindow &window){
 
 
     Button* squirrelBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz wiewiorke",&window);
-    squirrelBtn->setPosition(200.f, 960.f);
+    squirrelBtn->setPosition(300.f, 960.f);
     squirrelBtn->setOnClickAction([this, &window]() {
         if(manager_->canDraw==true){
             TemplateDeck tmp_deck;
