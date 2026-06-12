@@ -48,8 +48,6 @@ void GameManager::initVisualSlots(const sf::Texture& slotTex) {
 
             float paddingX = (slotW - (texW * vs.sprite.getScale().x)) / 2.f;
             float paddingY = (slotH - (texH * vs.sprite.getScale().y)) / 2.f;
-            if(r==1) paddingY -=80;
-            else paddingY +=80;
 
             vs.sprite.setPosition(pos.x + paddingX, pos.y + paddingY);
             visualSlots_.push_back(vs);
@@ -225,11 +223,12 @@ void GameManager::drawBoardElements() {
 }
 
 
-Card* GameManager::BuildCard(int _damage, int _health,std::string _name, int _cost, CostType _ct,
-                const sf::Texture& _texture, const sf::Texture& _background,
-                const sf::Font& _font, sf::RenderWindow &window, int z=0)
+
+Card* GameManager::BuildCard(const CardStats& stats,
+                             const sf::Texture& _texture, const sf::Texture& _background,
+                             const sf::Font& _font, sf::RenderWindow &window, int z=0)
 {
-    Card* c = new Card(_health, _damage, _name, _cost, _ct, _texture, window, z);
+    Card* c = new Card(stats, _texture, &window, z);
     c->background = _background;
     c->setTexture(c->background);
     c->font = &_font;
@@ -239,86 +238,74 @@ Card* GameManager::BuildCard(int _damage, int _health,std::string _name, int _co
     CustomDrawable* cardSprite = new CustomDrawable();
     cardSprite->setTexture(c->spriteTexture);
     cardSprite->setRelativePosition(9, 36);
-    cardSprite->setScale(0.89,0.89);
+    cardSprite->setScale(0.89, 0.89);
     c->addChild(cardSprite);
 
+    CustomTextDrawable* healthText = new CustomTextDrawable(&(c->health));
+    healthText->setRelativePosition(90, 140);
+    healthText->text->setCharacterSize(24);
+    healthText->text->setFillColor(sf::Color::Black);
+    healthText->text->setFont(_font);
+    healthText->text->setOutlineThickness(1);
+    c->addChild(healthText);
 
-    // std::cout << "spriteTexture size: " << c->spriteTexture.getSize().x << "x" << c->spriteTexture.getSize().y << "\n";
-    // std::cout << "cardSprite texture ptr: " << cardSprite->getTexture() << "\n";
-    // std::cout << "cardSprite textureRect: " << cardSprite->getTextureRect().width << "x" << cardSprite->getTextureRect().height << "\n";
+    CustomTextDrawable* nameText = new CustomTextDrawable();
+    nameText->text->setString(stats.name);
+    nameText->setRelativePosition(10, 0);
+    nameText->text->setCharacterSize(24);
+    nameText->text->setFillColor(sf::Color::Black);
+    nameText->text->setFont(_font);
+    nameText->text->setOutlineThickness(1);
+    c->addChild(nameText);
 
+    CustomTextDrawable* damageText = new CustomTextDrawable(&(c->damage));
+    damageText->setRelativePosition(14, 140);
+    damageText->text->setCharacterSize(24);
+    damageText->text->setFillColor(sf::Color::Black);
+    damageText->text->setFont(_font);
+    damageText->text->setOutlineThickness(1);
+    c->addChild(damageText);
 
+    CustomTextDrawable* costText = new CustomTextDrawable(&(c->cost));
+    costText->setRelativePosition(60, 30);
+    costText->text->setCharacterSize(12);
+    costText->text->setFillColor(sf::Color::Black);
+    costText->text->setFont(_font);
+    costText->text->setOutlineThickness(1);
+    c->addChild(costText);
 
-
-    CustomTextDrawable* health = new CustomTextDrawable(&(c->health));
-    health->setRelativePosition(90, 140);
-    health->text->setCharacterSize(24);
-    health->text->setFillColor(sf::Color::Black);
-    health->text->setFont(_font);
-    health->text->setOutlineThickness(1);
-    c->addChild(health);
-
-    CustomTextDrawable* name = new CustomTextDrawable();
-    name->text->setString(_name);
-    name->setRelativePosition(10, 0);
-    name->text->setCharacterSize(24);
-    name->text->setFillColor(sf::Color::Black);
-    name->text->setFont(_font);
-    name->text->setOutlineThickness(1);
-    c->addChild(name);
-
-    CustomTextDrawable* damage = new CustomTextDrawable(&(c->damage));
-    damage->setRelativePosition(14, 140);
-    damage->text->setCharacterSize(24);
-    damage->text->setFillColor(sf::Color::Black);
-    damage->text->setFont(_font);
-    damage->text->setOutlineThickness(1);
-    c->addChild(damage);
-
-    CustomTextDrawable* cost = new CustomTextDrawable(&(c->cost));
-    cost->setRelativePosition(60, 30);
-    cost->text->setCharacterSize(12);
-    cost->text->setFillColor(sf::Color::Black);
-    cost->text->setFont(_font);
-    cost->text->setOutlineThickness(1);
-    c->addChild(cost);
-
-    if(_ct == CostType::BLOOD)
-        cost->after = " Blood";
+    if(stats.costType == CostType::BLOOD)
+        costText->after = " Blood";
     else
-        cost->after = " Bones";
+        costText->after = " Bones";
 
     return c;
 
 }
 
 
+
 Card* GameManager::cloneCard(const Card* c){
-    // Zamiast polegać na wskaźnikach wyciąganych z surowej karty, które mogą być uszkodzone,
-    // wyciągamy referencję do okna oraz sprawdzamy tekstury.
     sf::RenderWindow& windowRef = const_cast<sf::RenderWindow&>(c->getWindow());
 
-    // Upewniamy się, że czcionka istnieje. Jeśli c->font jest nullem, używamy bezpiecznego fallbacku.
     if (c->font == nullptr) {
         std::cerr << "Blad: Karta poddawana klonowaniu nie posiada przypisanej czcionki!\n";
     }
 
-    // Tworzymy czysty, świeży klon karty za pomocą sprawdzonych struktur BuildCard
+    CardStats stats { c->name, c->getHealth(), c->getDamage(), c->getCost(), c->getCostType(), "" };
+
     Card* newClone = BuildCard(
-        c->getDamage(),
-        c->getHealth(),
-        c->name,
-        c->getCost(),
-        c->getCostType(),
-        c->spriteTexture,  // Oryginalna tekstura stwora (np. wilk, wąż)
-        c->background,     // Oryginalne tło karty
-        *(c->font),        // Czcionka
+        stats,
+        c->spriteTexture,
+        c->background,
+        *(c->font),
         windowRef,
         0
         );
 
     return newClone;
 }
+
 
 
 GameBoard* GameManager::getBoard() const {

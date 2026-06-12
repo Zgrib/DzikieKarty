@@ -12,6 +12,15 @@ enum CostType{
     BLOOD
 };
 
+struct CardStats {
+    std::string name;
+    int health;
+    int damage;
+    int cost;
+    CostType costType;
+    std::string textureKey;
+};
+
 class Card: public Interactive{
     bool isMarkedForSacrifice_ = false;
 
@@ -32,9 +41,9 @@ public:
         damage = 0;
         cost = 0;
         costType_ = BLOOD;
-
     }
 
+    /*
     Card(int _health, int _damage,std::string _name, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow &window, int z=0): Interactive(z, &window){
         health = _health;
         damage = _damage;
@@ -51,6 +60,17 @@ public:
         costType_ = _ct;
         sprite.setTexture(_texture);
         name =_name;
+    }
+    */
+
+    Card(const CardStats& stats, sf::Texture _texture, sf::RenderWindow* window, int z=0)
+        : Interactive(z, window) {
+        health = stats.health;
+        damage = stats.damage;
+        cost = stats.cost;
+        costType_ = stats.costType;
+        name = stats.name;
+        sprite.setTexture(_texture);
     }
 
 

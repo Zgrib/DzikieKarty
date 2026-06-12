@@ -1,4 +1,5 @@
 #include "GameLog.h"
+//#include <sstream>
 
 GameLog* GameLog::instance = nullptr;
 
@@ -23,23 +24,42 @@ GameLog::GameLog(const sf::Font& font, sf::RenderWindow* window) : CustomDrawabl
 }
 
 void GameLog::add(const std::string& msg) {
-    if (!instance) return; // jak obiekt nie istnieje to zlewamy
+    if (!instance) return;
 
-    instance->messages.push_back(msg);
+    std::string currentLine = "";
+    float maxWidth = 420.f;
 
-    // jak wyjezdza poza limit to wywalamy pierwszy z gory
-    if (instance->messages.size() > instance->maxLines) {
+    for (size_t i = 0; i < msg.length(); ++i) {
+        currentLine += msg[i];
+        instance->logText.setString(currentLine);
+
+        if (instance->logText.getLocalBounds().width > maxWidth) {
+            size_t lastSpace = currentLine.find_last_of(' ');
+
+            if (lastSpace != std::string::npos && lastSpace > 0) {
+                instance->messages.push_back(currentLine.substr(0, lastSpace));
+                currentLine = currentLine.substr(lastSpace + 1);
+            } else {
+                instance->messages.push_back(currentLine.substr(0, currentLine.length() - 1));
+                currentLine = msg[i];
+            }
+        }
+    }
+
+    if (!currentLine.empty()) {
+        instance->messages.push_back(currentLine);
+    }
+
+    while (instance->messages.size() > instance->maxLines) {
         instance->messages.pop_front();
     }
 
-    // sklejamy cala kolejke w jeden wielki string z enterami
     std::string full = "";
     for (const auto& m : instance->messages) {
         full += m + "\n";
     }
     instance->logText.setString(full);
 }
-
 void GameLog::Draw() {
     if (window) {
         window->draw(title);
