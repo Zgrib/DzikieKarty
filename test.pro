@@ -31,7 +31,26 @@ win32 {
     QMAKE_LFLAGS += -Wl,-rpath,/usr/local/lib
 }
 DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png resources/phCard.png resources/papyrus.ttf \
-    dzikiekarty.qmodel
+    dzikiekarty.qmodel \
+    resources/Battleground.png \
+    resources/Button.png \
+    resources/Button_pressed.png \
+    resources/Deck.png \
+    resources/Waga.png \
+    resources/background-2.png \
+    resources/background-3.png \
+    resources/background-4.png \
+    resources/background-5.png \
+    resources/background-6.png \
+    resources/background-7.png \
+    resources/background-8.png \
+    resources/background.png \
+    resources/chat.png \
+    resources/nietoperz.png \
+    resources/raven.png \
+    resources/waz.png \
+    resources/wiewiorka.png \
+    resources/wilk.png
 
 QMAKE_POST_LINK += mkdir -p $$OUT_PWD/resources || true
 QMAKE_POST_LINK += cp -r $$PWD/resources/* $$OUT_PWD/resources || true
