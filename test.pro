@@ -36,7 +36,6 @@ DISTFILES += resources/karta.png resources/placeholder.png resources/phSlot.png 
     resources/Button.png \
     resources/Button_pressed.png \
     resources/Deck.png \
-    resources/Waga.png \
     resources/background-2.png \
     resources/background-3.png \
     resources/background-4.png \
