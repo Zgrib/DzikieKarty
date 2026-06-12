@@ -55,9 +55,12 @@ public:
 
     void cleanupDeadCards();
 
+    Card* BuildCard(const CardStats& stats, const sf::Texture& _texture, const sf::Texture& _background, const sf::Font& _font, sf::RenderWindow &window, int z);
+    /*
     Card* BuildCard(int _damage, int _health, std::string _name, int _cost, CostType _ct,
                     const sf::Texture& _texture, const sf::Texture& _background,
                     const sf::Font& _font, sf::RenderWindow &window, int z);
+    */
 
     Card* cloneCard(const Card* c);
 

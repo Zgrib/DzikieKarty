@@ -1,6 +1,7 @@
 #include "context.h"
 #include "button.h"
 #include "GameLog.h"
+#include "TemplateDeck.h"
 #include <iostream>
 
 Context::Context()
@@ -43,6 +44,7 @@ void Context::load_textures() {
         textures_.emplace(key, std::move(tex));
     }
 }
+
 void Context::load_fonts(){
     const std::vector<std::pair<std::string, std::string>> files = {
         {"papyrus", "resources/papyrus.ttf"} // .ttf
@@ -86,16 +88,22 @@ void Context::start_context() {
     manager_->getPlayer().initializeDeck(this, window);
     manager_->getPlayer().prepareForBattle(manager_);
     //manager test!!
-    Card* card = manager_->BuildCard(2,5,"Raven",2,CostType::BLOOD,textures_["raven"],textures_["card"],fonts_["papyrus"],window,0);
+    TemplateDeck tmp_deck;
+
+    CardStats ravenStats = tmp_deck.generateCardStats(CreatureType::WRONA);
+    Card* card = manager_->BuildCard(ravenStats, textures_["raven"], textures_["card"], fonts_["papyrus"], window, 0);
     manager_->placeCard(card,0,0);
 
-    Card* card3 = manager_->BuildCard(3,2,"Wolf",2,CostType::BLOOD,textures_["wolf"],textures_["card"],fonts_["papyrus"],window,0);
+    CardStats wolfStats = tmp_deck.generateCardStats(CreatureType::WILK);
+    Card* card3 = manager_->BuildCard(wolfStats, textures_["wolf"], textures_["card"], fonts_["papyrus"], window, 0);
     manager_->placeCard(card3,1,0);
 
-    Card* card1 = manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
+    CardStats snakeStats1 = tmp_deck.generateCardStats(CreatureType::WEZ);
+    Card* card1 = manager_->BuildCard(snakeStats1, textures_["snake"], textures_["card"], fonts_["papyrus"], window, 0);
     manager_->placeCard(card1,1,2);
 
-    Card* card2 = manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
+    CardStats snakeStats2 = tmp_deck.generateCardStats(CreatureType::WEZ);
+    Card* card2 = manager_->BuildCard(snakeStats2, textures_["snake"], textures_["card"], fonts_["papyrus"], window, 0);
     manager_->placeCard(card2,0,3);
 
 
@@ -461,28 +469,25 @@ void Context::start_battleground(sf::RenderWindow &window){
     squirrelBtn->setPosition(320.f, 960.f);
     squirrelBtn->setOnClickAction([this, &window]() {
         if(manager_->canDraw==true){
-            // Generujemy kartę przez GameManager, aby miała wszystkie teksty, ramki i przypisane okno!
+            TemplateDeck tmp_deck;
+            CardStats squirrelStats = tmp_deck.generateCardStats(CreatureType::WIEWIORKA);
+
             Card* squirrel = manager_->BuildCard(
-                0,
-                1,
-                "Squirrel",
-                0,
-                CostType::BLOOD,
-                textures_["squirel"], // Poprawiłem literówkę z Twojego load_textures ("squirel")
+                squirrelStats,
+                textures_["squirel"],
                 textures_["card"],
                 fonts_["papyrus"],
                 window,
                 0
                 );
-            manager_->canDraw=false;
 
+            manager_->canDraw=false;
             manager_->getPlayer().drawSquirrel(squirrel);
             GameLog::add("-> Wiewiorka zostala dobrana");
         }
         else{
             GameLog::add("-> Nie mozesz teraz dobrac karty");
         }
-
     });
     battle_buttons_.emplace_back(squirrelBtn);
 

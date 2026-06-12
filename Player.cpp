@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Card.h"
 #include "context.h"
+#include "TemplateDeck.h"
 #include <algorithm>
 #include <random>
 #include <iostream>
@@ -73,26 +74,31 @@ void Player::updateHandPositions() {
 
 
 ///loads some basic ass cards into permanent deck
-void Player::initializeDeck(Context* context, sf::RenderWindow& window){
-    Card* card = context->manager_->BuildCard(2,5,"Raven",2,CostType::BLOOD,context->textures_["raven"],context->textures_["card"],context->fonts_["papyrus"],window,0);
-    //manager_->placeCard(card,0,0);
+void Player::initializeDeck(Context* context, sf::RenderWindow& window) {
+    // Tworzymy lokalną fabrykę statystyk
+    TemplateDeck tmp_deck;
 
-    Card* card3 = context->manager_->BuildCard(3,2,"Wolf",2,CostType::BLOOD,context->textures_["wolf"],context->textures_["card"],context->fonts_["papyrus"],window,0);
-    //manager_->placeCard(card3,1,0);
+    // Kruk
+    CardStats ravenStats = tmp_deck.generateCardStats(CreatureType::WRONA);
+    Card* card = context->manager_->BuildCard(ravenStats, context->textures_["raven"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
-    Card* card1 = context->manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
-    //manager_->placeCard(card1,1,2);
+    // Wilk
+    CardStats wolfStats = tmp_deck.generateCardStats(CreatureType::WILK);
+    Card* card3 = context->manager_->BuildCard(wolfStats, context->textures_["wolf"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
-    Card* card2 = context->manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
-    //manager_->placeCard(card2,0,3);
+    // Waz 1
+    CardStats snakeStats1 = tmp_deck.generateCardStats(CreatureType::WEZ);
+    Card* card1 = context->manager_->BuildCard(snakeStats1, context->textures_["snake"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
+
+    // Waz 2
+    CardStats snakeStats2 = tmp_deck.generateCardStats(CreatureType::WEZ);
+    Card* card2 = context->manager_->BuildCard(snakeStats2, context->textures_["snake"], context->textures_["card"], context->fonts_["papyrus"], window, 0);
 
     permanentDeck.emplace_back(card);
     permanentDeck.emplace_back(card1);
     permanentDeck.emplace_back(card2);
     permanentDeck.emplace_back(card3);
-
 }
-
 
 
 void Player::prepareForBattle(GameManager* manager) {

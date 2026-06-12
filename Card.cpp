@@ -1,6 +1,19 @@
 #include "Card.h"
 
+Card* Card::clone() const {
+    CardStats stats { this->name, this->health, this->damage, this->cost, this->costType_, "" };
 
+    Card* newCard = new Card(
+        stats,
+        this->spriteTexture,
+        this->window,
+        0
+        );
+
+    return newCard;
+}
+
+/*
 Card* Card::clone() const {
     // Tworzymy zupełnie nowy obiekt na stercie i kopiujemy do niego obecne wartości
     Card* newCard = new Card(
@@ -16,6 +29,7 @@ Card* Card::clone() const {
 
     return newCard;
 }
+*/
 
 
 // Card* BuildCard(int _damage, int _health, int _cost, CostType _ct,
