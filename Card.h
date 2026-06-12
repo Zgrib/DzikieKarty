@@ -5,6 +5,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "Interactive.h"
+#include "GameLog.h"
 
 enum CostType{
     BONES,
@@ -21,6 +22,7 @@ public:
     sf::Texture background;
     sf::Texture reverse;
     const sf::Font* font = nullptr;
+    std::string name;
 
     sf::Vector2f globalPosition;
 
@@ -32,28 +34,32 @@ public:
         costType_ = BLOOD;
 
     }
-    Card(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow &window, int z=0): Interactive(z, &window){
+
+    Card(int _health, int _damage,std::string _name, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow &window, int z=0): Interactive(z, &window){
         health = _health;
         damage = _damage;
         cost = _cost;
         costType_ = _ct;
         sprite.setTexture(_texture);
+        name =_name;
     }
 
-    Card(int _health, int _damage, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow* window, int z=0): Interactive(z, window){
+    Card(int _health, int _damage,std::string _name, int _cost, CostType _ct, sf::Texture _texture, sf::RenderWindow* window, int z=0): Interactive(z, window){
         health = _health;
         damage = _damage;
         cost = _cost;
         costType_ = _ct;
         sprite.setTexture(_texture);
+        name =_name;
     }
-
 
 
 
     Card* clone() const;
 
-    ~Card() override {}
+    ~Card() override {
+        GameLog::add("-> "+name+" umiera.");
+    }
 
     int getHealth() const{
         return health;

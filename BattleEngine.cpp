@@ -1,5 +1,6 @@
 #include "BattleEngine.h"
 #include "GameManager.h"
+#include "GameLog.h"
 #include <iostream>
 void BattleEngine::setGM(GameManager* manager){
     manager_ = manager;
@@ -12,6 +13,7 @@ void BattleEngine::setCardInSlot(Card* card, int row, int col) {
 }
 void BattleEngine::EndTurn() {
     if (currentState == BattleState::IDLE) {
+
         currentState = BattleState::START_PHASE;
         currentProcessRow = 1;
         currentProcessCol = 0;
@@ -45,7 +47,7 @@ void BattleEngine::update(float deltaTime) {
         // POPRAWKA: Indeksowanie [col][row] zgodnie z Twoją deklaracją board[4][2]
         Card* activeCard = board[currentProcessCol][currentProcessRow];
 
-        if (activeCard != nullptr && activeCard->getDamage() > 0) {
+        if (activeCard != nullptr && activeCard->getHealth() > 0 && activeCard->getDamage() > 0) {
 
             // Wyznaczamy rząd przeciwnika (nadal operujemy na wartościach 0 i 1)
             int opponentRow = (currentProcessRow == 1) ? 0 : 1;
@@ -58,18 +60,40 @@ void BattleEngine::update(float deltaTime) {
 
             if (opponentCard != nullptr) {
                 opponentCard->health -= activeCard->getDamage();
+                GameLog::add("-> "+activeCard->name +" atakuje " +opponentCard->name + " zadajac " + std::to_string(activeCard->getDamage()) +" obrazen.");
                 std::cout << "Zadano " << activeCard->getDamage() << " dmg. HP wroga: " << opponentCard->health << "\n";
             } else {
-                std::cout << "Pozycja naprzeciwko jest pusta.\n";
+                if(opponentRow==0){
+                    eai->damageTaken += activeCard->getDamage();
+                    GameLog::add("-> "+activeCard->name +" atakuje wroga bezposrednio zadajac " +  std::to_string(activeCard->getDamage()) +" obrazen.");
+                }
+                else{
+                    player->damageTaken += activeCard->getDamage();
+                    GameLog::add("-> "+activeCard->name +" atakuje ciebie bezposrednio zadajac " +  std::to_string(activeCard->getDamage()) +" obrazen.");
+                }
+
+                //std::cout << "Pozycja naprzeciwko jest pusta.\n";
             }
 
             timer.restart();
             currentState = BattleState::COOLDOWN;
         }
         else {
-            // Pusty slot lub 0 ataku - natychmiastowy przeskok w tej samej klatce
             currentProcessCol++;
             if (currentProcessCol >= 4) {
+                //logika (potencjalnego) konca bitwy
+
+                if(abs(player->damageTaken - eai->damageTaken)>=5){
+                    //battle has to end
+                    if(player->damageTaken > eai->damageTaken){
+                        //player loses
+                    }
+                    else{
+                        //player wins
+                    }
+
+                }
+
                 currentProcessCol = 0;
                 currentProcessRow--; // Ruch w górę (z row 1 na row 0)
             }
@@ -111,8 +135,8 @@ void BattleEngine::update(float deltaTime) {
         break;
 
     case BattleState::END_PHASE:
-        std::cout << "Koniec symulacji. Wszystkie karty wykonaly ruch.\n";
-
+        GameLog::add("Twoja tura, dobierz karte!");
+        manager_->canDraw=true;
         // Usunięcie martwych kart z tablicy silnika (HP <= 0)
         for(int r = 0; r < 2; ++r) {
             for(int c = 0; c < 4; ++c) {

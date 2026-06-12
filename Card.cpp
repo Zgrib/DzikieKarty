@@ -6,6 +6,7 @@ Card* Card::clone() const {
     Card* newCard = new Card(
         this->health,
         this->damage,
+        this->name,
         this->cost,
         this->costType_,
         this->spriteTexture,

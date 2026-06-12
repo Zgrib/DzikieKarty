@@ -74,16 +74,16 @@ void Player::updateHandPositions() {
 
 ///loads some basic ass cards into permanent deck
 void Player::initializeDeck(Context* context, sf::RenderWindow& window){
-    Card* card = context->manager_->BuildCard(2,5,2,CostType::BLOOD,context->textures_["raven"],context->textures_["card"],context->fonts_["papyrus"],window,0);
+    Card* card = context->manager_->BuildCard(2,5,"Raven",2,CostType::BLOOD,context->textures_["raven"],context->textures_["card"],context->fonts_["papyrus"],window,0);
     //manager_->placeCard(card,0,0);
 
-    Card* card3 = context->manager_->BuildCard(3,2,2,CostType::BLOOD,context->textures_["wolf"],context->textures_["card"],context->fonts_["papyrus"],window,0);
+    Card* card3 = context->manager_->BuildCard(3,2,"Wolf",2,CostType::BLOOD,context->textures_["wolf"],context->textures_["card"],context->fonts_["papyrus"],window,0);
     //manager_->placeCard(card3,1,0);
 
-    Card* card1 = context->manager_->BuildCard(1,3,1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
+    Card* card1 = context->manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
     //manager_->placeCard(card1,1,2);
 
-    Card* card2 = context->manager_->BuildCard(1,3,1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
+    Card* card2 = context->manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,context->textures_["snake"],context->textures_["card"],context->fonts_["papyrus"],window,0);
     //manager_->placeCard(card2,0,3);
 
     permanentDeck.emplace_back(card);
@@ -163,23 +163,4 @@ void Player::removeCard(Card* c) {
 }
 
 
-// void Player::updateHandPositions() {
-//     if (hand.empty()) return;
-
-//     float screenWidth = 1920.f;  // Dopasuj do swojej rozdzielczości bazowej
-//     float screenHeight = 1080.f;
-
-//     float cardWidth = hand[0]->background.getSize().x * hand[0]->getScale().x;
-//     float spacing = 15.f; // Odstęp między kartami w ręce
-//     float handY = screenHeight - (hand[0]->background.getSize().y * hand[0]->getScale().y) - 20.f; // 20px od dołu
-
-//     // Obliczamy całkowitą szerokość całej ręki, aby ją idealnie wycentrować
-//     float totalWidth = (hand.size() * cardWidth) + ((hand.size() - 1) * spacing);
-//     float startX = (screenWidth - totalWidth) / 2.f;
-
-//     for (size_t i = 0; i < hand.size(); ++i) {
-//         float finalX = startX + i * (cardWidth + spacing);
-//         hand[i]->setPosition(finalX, handY);
-//     }
-// }
 

@@ -152,17 +152,18 @@ public:
     std::string after;
 
 
-    CustomTextDrawable(){
+    CustomTextDrawable(int _z=0):CustomDrawable(_z){
         text = new sf::Text();
         text->setPosition(0,0);
 
     }
 
 
-    CustomTextDrawable(int* _value){
+    CustomTextDrawable(int* _value, int _z=0) :CustomDrawable(_z){
         value= _value;
         text = new sf::Text();
         text->setPosition(0,0);
+
         //text->setFont(font);
         //text->setFillColor(sf::Color(0,0,0));
     }

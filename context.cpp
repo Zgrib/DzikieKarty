@@ -83,19 +83,19 @@ void Context::start_context() {
     Context::start_main_menu(window);
     Context::start_battleground(window);
 
-    manager_->getBattleEngine().player->initializeDeck(this, window);
-    manager_->getBattleEngine().player->prepareForBattle(manager_);
+    manager_->getPlayer().initializeDeck(this, window);
+    manager_->getPlayer().prepareForBattle(manager_);
     //manager test!!
-    Card* card = manager_->BuildCard(2,5,2,CostType::BLOOD,textures_["raven"],textures_["card"],fonts_["papyrus"],window,0);
+    Card* card = manager_->BuildCard(2,5,"Raven",2,CostType::BLOOD,textures_["raven"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card,0,0);
 
-    Card* card3 = manager_->BuildCard(3,2,2,CostType::BLOOD,textures_["wolf"],textures_["card"],fonts_["papyrus"],window,0);
+    Card* card3 = manager_->BuildCard(3,2,"Wolf",2,CostType::BLOOD,textures_["wolf"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card3,1,0);
 
-    Card* card1 = manager_->BuildCard(1,3,1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
+    Card* card1 = manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card1,1,2);
 
-    Card* card2 = manager_->BuildCard(1,3,1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
+    Card* card2 = manager_->BuildCard(1,3,"Snake",1,CostType::BLOOD,textures_["snake"],textures_["card"],fonts_["papyrus"],window,0);
     manager_->placeCard(card2,0,3);
 
 
@@ -148,8 +148,6 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
             if (scene_ == 1) {
-                for (Button* btn : battle_buttons_) {
-                }
                 bool sacrificeClicked = false;
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0) {
                     int requiredCost = manager_->selectedCard->getCost();
@@ -213,11 +211,17 @@ void Context::events_loop(sf::RenderWindow &window,sf::Event &event){
                 }
 
 
+
                 // 2. Obsługa wyboru karty z ręki
                 Player* player = manager_->getBattleEngine().player;
                 if (player != nullptr) {
                     for (Card* card : player->hand) {
                         if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
+
+                            if(manager_->canDraw==true){
+                                GameLog::add("Najpierw dobierz karte!");
+                                continue;
+                            }
 
                             // Jeśli klikałeś już inną kartę, przywróć ją na dół
                             if (manager_->selectedCard != nullptr && manager_->selectedCard != card) {
@@ -285,6 +289,7 @@ void Context::start_main_menu(sf::RenderWindow &window){
             ptr->setWindow(&window);
         }
 }
+
 void Context::main_menu(sf::RenderWindow &window){
     for(CustomDrawable* ptr: menu_drawables_){
         ptr->Draw();
@@ -301,25 +306,87 @@ void Context::main_menu(sf::RenderWindow &window){
 
 }
 
-
 void Context::start_battleground(sf::RenderWindow &window){
     CustomDrawable* background= new CustomDrawable(-10);
     CustomDrawable* leftPanel= new CustomDrawable(-8);
     CustomDrawable* rightPanel= new CustomDrawable(-8);
     CustomDrawable* bottomPanel = new CustomDrawable(-8);
 
+    CustomTextDrawable* szalaPlayer = new CustomTextDrawable(&(manager_->getPlayer().damageTaken),2);
+    CustomTextDrawable* szalaAI = new CustomTextDrawable(&(manager_->getAI().damageTaken),2);
+
+    CustomTextDrawable* szalaPlayerD = new CustomTextDrawable(2);
+    CustomTextDrawable* szalaAID = new CustomTextDrawable(2);
+
+    szalaPlayerD->text->setFont(fonts_["papyrus"]);
+    szalaPlayerD->text->setCharacterSize(24);
+    szalaPlayerD->text->setString("Player damage taken\n" );
+    szalaPlayerD->text->setPosition(0.f, 500.f);
+    battle_drawables_.emplace_back(szalaPlayerD);
+
+
+
+    szalaAID->text->setFont(fonts_["papyrus"]);
+    szalaAID->text->setCharacterSize(24);
+    szalaAID->text->setString("Enemy damage taken\n") ;
+    szalaAID->text->setPosition(250.f, 500.f);
+    battle_drawables_.emplace_back(szalaAID);
+
+    szalaPlayer->text->setFont(fonts_["papyrus"]);
+    szalaPlayer->text->setCharacterSize(50);
+    szalaPlayer->text->setPosition(50.f, 400.f);
+    szalaPlayer->text->setFillColor(sf::Color::White);
+    battle_drawables_.emplace_back(szalaPlayer);
+
+
+    szalaAI->text->setFont(fonts_["papyrus"]);
+    szalaAI->text->setCharacterSize(50);
+    szalaAI->text->setFillColor(sf::Color::White);
+    szalaAI->text->setPosition(400.f, 400.f);
+    battle_drawables_.emplace_back(szalaAI);
+
+
+
+    //delete this button later
     Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
     quit->setPosition(1800,50);
     quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
     battle_buttons_.emplace_back(quit);
-    std::cout<<"test test test\n";
+
 
     Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
     endTurn->setPosition(200,700);
     endTurn->setOnClickAction([this](){
-        std::cout << "Koniec tury! Odpalam silnik...\n";
-        GameLog::add("-> koniec tury");
-        manager_->getBattleEngine().EndTurn();
+        if(manager_->canDraw==true){
+            GameLog::add("Najpierw dobierz karte!");
+
+        }
+        else{
+
+            if (manager_->selectedCard != nullptr) {
+                //Wyłączamy flagę zaznaczenia w obiekcie karty
+                manager_->selectedCard->setSelected(false);
+                //Zerujemy wskaźnik w managerze
+                manager_->selectedCard = nullptr;
+                //Czyścimy potencjalne niedokończone ofiary, jeśli jakieś wisiały
+                for (Card* c : manager_->cardsToSacrifice) {
+                    c->setSacrificeHighlight(false);
+                }
+                manager_->cardsToSacrifice.clear();
+                //Przywracamy karty na ręce na ich domyślne pozycje (pionowo i poziomo)
+                Player* player = manager_->getBattleEngine().player;
+                if (player != nullptr) {
+                    player->updateHandPositions();
+                }
+            }
+
+
+            std::cout << "Koniec tury! Odpalam silnik...\n";
+            GameLog::add("-> koniec tury");
+            manager_->getBattleEngine().EndTurn();
+
+        }
+
     });
     battle_buttons_.emplace_back(endTurn);
     std::cout << "Test/n";
@@ -350,8 +417,8 @@ void Context::start_battleground(sf::RenderWindow &window){
     battle_drawables_.emplace_back(logger);
 
     // testowy log na start
-    GameLog::add("bitwa rozpoczeta!");
-    GameLog::add("powodzenia.");
+    GameLog::add("Bitwa rozpoczeta!");
+    GameLog::add("Powodzenia.");
 
 
     bottomPanel->setTexture(textures_["deck"]);
@@ -374,9 +441,17 @@ void Context::start_battleground(sf::RenderWindow &window){
     Button* drawCardBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz karte",&window);
     drawCardBtn->setPosition(50.f, 960.f);
     drawCardBtn->setOnClickAction([this]() {
-        // Dobieramy kartę z talii bitewnej
-        manager_->getBattleEngine().player->drawCard();
-        GameLog::add("-> karta zostala dobrana");
+        if(manager_->canDraw==true){
+            // Dobieramy kartę z talii bitewnej
+            manager_->getPlayer().drawCard();
+            GameLog::add("-> karta zostala dobrana");
+
+            manager_->canDraw=false;
+        }
+        else{
+            GameLog::add("-> Nie mozesz teraz dobrac karty");
+        }
+
     });
     battle_buttons_.emplace_back(drawCardBtn);
 
@@ -385,23 +460,29 @@ void Context::start_battleground(sf::RenderWindow &window){
     Button* squirrelBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz wiewiorke",&window);
     squirrelBtn->setPosition(320.f, 960.f);
     squirrelBtn->setOnClickAction([this, &window]() {
-        // Generujemy kartę przez GameManager, aby miała wszystkie teksty, ramki i przypisane okno!
-        Card* squirrel = manager_->BuildCard(
-            0,                 // Atak
-            1,                 // HP
-            0,                 // Koszt
-            CostType::BLOOD,
-            textures_["squirel"], // Poprawiłem literówkę z Twojego load_textures ("squirel")
-            textures_["card"],
-            fonts_["papyrus"],
-            window,
-            0
-            );
+        if(manager_->canDraw==true){
+            // Generujemy kartę przez GameManager, aby miała wszystkie teksty, ramki i przypisane okno!
+            Card* squirrel = manager_->BuildCard(
+                0,
+                1,
+                "Squirrel",
+                0,
+                CostType::BLOOD,
+                textures_["squirel"], // Poprawiłem literówkę z Twojego load_textures ("squirel")
+                textures_["card"],
+                fonts_["papyrus"],
+                window,
+                0
+                );
+            manager_->canDraw=false;
 
-        manager_->getBattleEngine().player->drawSquirrel(squirrel);
-        GameLog::add("-> wiewiorka zostala dobrana");
+            manager_->getPlayer().drawSquirrel(squirrel);
+            GameLog::add("-> Wiewiorka zostala dobrana");
+        }
+        else{
+            GameLog::add("-> Nie mozesz teraz dobrac karty");
+        }
 
-        std::cout << "Wygenerowano w pelni funkcjonalna Wiewiorke na rece!\n";
     });
     battle_buttons_.emplace_back(squirrelBtn);
 

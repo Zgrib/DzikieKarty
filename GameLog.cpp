@@ -8,14 +8,16 @@ GameLog::GameLog(const sf::Font& font, sf::RenderWindow* window) : CustomDrawabl
 
     // napis gamelog obok przycisku
     title.setFont(font);
-    title.setString("gamelog");
+    title.setString("Gamelog");
     title.setCharacterSize(35);
     title.setFillColor(sf::Color::Black);
+    title.setOutlineThickness(0.5);
     title.setPosition(1500, 30);
 
     // miejsce na wlasciwe logi
     logText.setFont(font);
-    logText.setCharacterSize(25);
+    logText.setCharacterSize(20);
+    logText.setOutlineThickness(0.5);
     logText.setFillColor(sf::Color::Black);
     logText.setPosition(1500, 110);
 }

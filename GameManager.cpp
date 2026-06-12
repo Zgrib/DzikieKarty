@@ -15,6 +15,8 @@ GameManager::GameManager(sf::RenderWindow& window)
     // Twoja siatka ma 2 rzędy i 4 kolumny
     board_ = new GameBoard(boardBounds, 2, 4);
     battleEngine_.setGM(this);
+    player = battleEngine_.player;
+    eai = battleEngine_.eai;
 }
 
 void GameManager::initVisualSlots(const sf::Texture& slotTex) {
@@ -55,6 +57,15 @@ void GameManager::initVisualSlots(const sf::Texture& slotTex) {
 
 GameManager::~GameManager() {
     delete board_;
+}
+
+
+Player& GameManager::getPlayer(){
+    return *player;
+}
+
+EnemyAI& GameManager::getAI(){
+    return *eai;
 }
 
 
@@ -205,11 +216,11 @@ void GameManager::drawBoardElements() {
 
 
 
-Card* GameManager::BuildCard(int _damage, int _health, int _cost, CostType _ct,
+Card* GameManager::BuildCard(int _damage, int _health,std::string _name, int _cost, CostType _ct,
                 const sf::Texture& _texture, const sf::Texture& _background,
                 const sf::Font& _font, sf::RenderWindow &window, int z=0)
 {
-    Card* c = new Card(_health, _damage, _cost, _ct, _texture, window, z);
+    Card* c = new Card(_health, _damage, _name, _cost, _ct, _texture, window, z);
     c->background = _background;
     c->setTexture(c->background);
     c->font = &_font;
@@ -237,6 +248,15 @@ Card* GameManager::BuildCard(int _damage, int _health, int _cost, CostType _ct,
     health->text->setFont(_font);
     health->text->setOutlineThickness(1);
     c->addChild(health);
+
+    CustomTextDrawable* name = new CustomTextDrawable();
+    name->text->setString(_name);
+    name->setRelativePosition(10, 0);
+    name->text->setCharacterSize(24);
+    name->text->setFillColor(sf::Color::Black);
+    name->text->setFont(_font);
+    name->text->setOutlineThickness(1);
+    c->addChild(name);
 
     CustomTextDrawable* damage = new CustomTextDrawable(&(c->damage));
     damage->setRelativePosition(14, 140);
@@ -279,6 +299,7 @@ Card* GameManager::cloneCard(const Card* c){
     Card* newClone = BuildCard(
         c->getDamage(),
         c->getHealth(),
+        c->name,
         c->getCost(),
         c->getCostType(),
         c->spriteTexture,  // Oryginalna tekstura stwora (np. wilk, wąż)

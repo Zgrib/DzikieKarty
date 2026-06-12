@@ -16,7 +16,7 @@ public:
 
 
 
-    Player(){}
+    Player(){damageTaken=0;}
     void prepareForBattle(GameManager* manager);
     bool drawCard();
     void updateHandPositions();
