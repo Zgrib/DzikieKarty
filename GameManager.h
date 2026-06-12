@@ -32,6 +32,7 @@ private:
 
 public:
     int aiDirectorCredits;
+    void resetBattleground();
     std::map<CreatureType, int> aiCardValues = {
         { CreatureType::WEZ,        4 },
         { CreatureType::NIETOPERZ,  3 },
@@ -47,7 +48,7 @@ public:
 
 
     bool bloodCostPaid = false;
-    int bones=5;
+    int bones=0;
     bool canDraw=false;
     CustomTextDrawable* cardCounter=nullptr;
     Card* selectedCard=nullptr;

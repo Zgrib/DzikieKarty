@@ -151,7 +151,6 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
             window.close();
         }
 
-        // REAKCJA NA KLIKNIĘCIE MYSZKĄ
         if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
             sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
@@ -174,7 +173,6 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                     continue;
                 }
 
-                // --- 1. OBSŁUGA WYBORU KARTY Z RĘKI ---
                 Player* player = manager_->getBattleEngine().player;
                 bool handCardClicked = false;
                 if (player != nullptr) {
@@ -187,19 +185,20 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                                 break;
                             }
 
-                            // Zmiana karty - resetujemy podświetlenia starych ofiar i flagę opłacenia
                             if (manager_->selectedCard != nullptr && manager_->selectedCard != card) {
                                 manager_->selectedCard->setSelected(false);
                                 for (Card* c : manager_->cardsToSacrifice) {
                                     c->setSacrificeHighlight(false);
                                 }
+
+
                                 manager_->cardsToSacrifice.clear();
                                 player->updateHandPositions();
                             }
 
                             manager_->selectedCard = card;
                             manager_->cardsToSacrifice.clear();
-                            manager_->bloodCostPaid = false; // Nowa wybrana karta = koszt jeszcze nieopłacony
+                            manager_->bloodCostPaid = false;
 
                             card->setPosition(card->getPosition().x, window.getSize().y - card->getGlobalBounds().height - 70.f);
                             card->setSelected(true);
@@ -214,7 +213,6 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                     continue;
                 }
 
-                // --- 2. LOGIKA KOSZTU: KOŚCI (CostType::BONES) ---
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0 && manager_->selectedCard->costType_ == CostType::BONES) {
                     if (manager_->bones < manager_->selectedCard->getCost()) {
                         GameLog::add("Masz za malo kosci! Potrzebujesz: " + std::to_string(manager_->selectedCard->getCost()));
@@ -226,9 +224,7 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                     }
                 }
 
-                // --- 3. LOGIKA KOSZTU: KREW (CostType::BLOOD) ---
                 bool sacrificeClicked = false;
-                // Logikę odpalamy TYLKO wtedy, gdy koszt NIE został jeszcze w pełni opłacony
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0 &&
                     manager_->selectedCard->costType_ == CostType::BLOOD && !manager_->bloodCostPaid) {
 
@@ -251,7 +247,7 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
 
                                 if (manager_->cardsToSacrifice.size() == static_cast<size_t>(requiredCost)) {
                                     std::cout << "Osiagnieto wymagany koszt! Karty natychmiastowo znikaja.\n";
-
+                                    manager_->bones+=manager_->cardsToSacrifice.size();
                                     for (Card* deadCard : manager_->cardsToSacrifice) {
                                         for (int boardCol = 0; boardCol < 4; ++boardCol) {
                                             if (manager_->getBattleEngine().board[boardCol][1] == deadCard) {
@@ -264,7 +260,6 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                                     }
                                     manager_->cardsToSacrifice.clear();
 
-                                    // ZAMIAST ZMIENIAĆ KOSZT KARTY, USTAWIAMY FLAGĘ:
                                     manager_->bloodCostPaid = true;
                                 }
                             }
@@ -278,14 +273,12 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
                     continue;
                 }
 
-                // Ścisła blokada: gracz klika na puste pole, karta kosztuje krew, ale flaga bloodCostPaid jest FALSE
                 if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0 &&
                     manager_->selectedCard->costType_ == CostType::BLOOD && !manager_->bloodCostPaid) {
                     GameLog::add("Musisz najpierw poswiecic jednostki!");
                     continue;
                 }
 
-                // --- 4. POSTAWIENIE KARTY NA PLANSZY ---
                 bool boardClicked = manager_->handleBoardClick(mousePos);
                 if (boardClicked) {
                     continue;
@@ -294,7 +287,6 @@ void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
         }
     }
 }
-
 
 void Context::start_main_menu(sf::RenderWindow &window){
         Button* btn_start=new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"START",&window);
@@ -337,6 +329,7 @@ void Context::main_menu(sf::RenderWindow &window){
     for (Button* btn : menu_buttons_) btn->update(mappedMousePos, isPressed);
 
 }
+
 void Context::start_choice_menu(sf::RenderWindow &window){
 
         std::vector<Button*> tmp_btn;
@@ -355,7 +348,13 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     Player& p = manager_->getPlayer();
                     TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WRONA);
                     Card* c = manager_->BuildCard(s, textures_["raven"], textures_["card"], fonts_["papyrus"], window, 0);
-                    p.addCard(c); scene_ = 1;
+                    p.addCard(c);
+                    manager_->resetBattleground();
+                    manager_->aiDirectorCredits += 3;
+                    manager_->getAI().makeMove(manager_);
+                    scene_ = 1;
+
+
                 });
                 tmp_btn[1]->setOnClickAction([this, &window](){ // WILK
                     Player& p = manager_->getPlayer();
@@ -367,19 +366,31 @@ void Context::start_choice_menu(sf::RenderWindow &window){
                     Player& p = manager_->getPlayer();
                     TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WEZ);
                     Card* c = manager_->BuildCard(s, textures_["wez"], textures_["card"], fonts_["papyrus"], window, 0);
-                    p.addCard(c); scene_ = 1;
+                    p.addCard(c);
+                    manager_->resetBattleground();
+                    manager_->aiDirectorCredits += 3;
+                    manager_->getAI().makeMove(manager_);
+                    scene_ = 1;
                 });
                 tmp_btn[3]->setOnClickAction([this, &window](){ // NIETOPERZ
                     Player& p = manager_->getPlayer();
                     TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::NIETOPERZ);
                     Card* c = manager_->BuildCard(s, textures_["nietoperz"], textures_["card"], fonts_["papyrus"], window, 0);
-                    p.addCard(c); scene_ = 1;
+                    p.addCard(c);
+                    manager_->resetBattleground();
+                    manager_->aiDirectorCredits += 3;
+                    manager_->getAI().makeMove(manager_);
+                    scene_ = 1;
                 });
                 tmp_btn[4]->setOnClickAction([this, &window](){ // WIEWIORKA
                     Player& p = manager_->getPlayer();
                     TemplateDeck td; CardStats s = td.generateCardStats(CreatureType::WIEWIORKA);
                     Card* c = manager_->BuildCard(s, textures_["wiewiorka"], textures_["card"], fonts_["papyrus"], window, 0);
-                    p.addCard(c); scene_ = 1;
+                    p.addCard(c);
+                    manager_->resetBattleground();
+                    manager_->aiDirectorCredits += 3;
+                    manager_->getAI().makeMove(manager_);
+                    scene_ = 1;
                 });
                                 srand(time(0));
                 int randomNum = rand() %5;
@@ -402,6 +413,7 @@ choice_buttons_.emplace_back(tmp_btn[randomNum]);
             ptr->setWindow(&window);
         }
 }
+
 void Context::choice_menu(sf::RenderWindow &window){
 
     for(CustomDrawable* ptr: choice_drawables_){
@@ -433,9 +445,9 @@ void Context::start_battleground(sf::RenderWindow &window){
     CustomTextDrawable* bones = new CustomTextDrawable(&(manager_->bones),2);
 
     bones->text->setFont(fonts_["papyrus"]);
-    bones->text->setCharacterSize(24);
+    bones->text->setCharacterSize(30);
     bones->before="Bone count: ";
-    bones->text->setPosition(50.f, 100.f);
+    bones->text->setPosition(50.f, 220.f);
     battle_drawables_.emplace_back(bones);
 
 
@@ -517,13 +529,6 @@ void Context::start_battleground(sf::RenderWindow &window){
     manager_->cardCounter = deckCounter;
 
 
-    // //delete this button later
-    // Button* quit = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"WYJDZ",&window);
-    // quit->setPosition(1800,50);
-    // quit->setOnClickAction([this](){scene_=0;});//and maybe do other stuff?
-    // battle_buttons_.emplace_back(quit);
-
-
     Button* endTurn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Zakoncz ture",&window);
     endTurn->setPosition(200,700);
     endTurn->setOnClickAction([this, &window](){
@@ -586,7 +591,7 @@ void Context::start_battleground(sf::RenderWindow &window){
 
 
     Button* squirrelBtn = new Button(5,textures_["button"],textures_["button_pressed"],fonts_["papyrus"],"Dobierz wiewiorke",&window);
-    squirrelBtn->setPosition(320.f, 960.f);
+    squirrelBtn->setPosition(200.f, 960.f);
     squirrelBtn->setOnClickAction([this, &window]() {
         if(manager_->canDraw==true){
             TemplateDeck tmp_deck;
@@ -656,123 +661,3 @@ void Context::battleground(sf::RenderWindow &window){
 
 
 }
-
-
-
-/*
- *
- * funkcja sprzed dodania kosci
-void Context::events_loop(sf::RenderWindow &window, sf::Event &event) {
-    while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            window.close();
-        }
-
-        // REAKCJA NA KLIKNIĘCIE MYSZKĄ
-        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-            sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-            sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
-
-            if (scene_ == 1) {
-                bool isBattleOver = (manager_->getBattleEngine().getCurrentState() == BattleState::BATTLE_OVER);
-
-                bool buttonClicked = false;
-                for (Button* btn : battle_buttons_) {
-                    // Sprawdzamy TYLKO widoczne przyciski i czy mysz się na nich znajduje
-                    if (btn->isVisible() && btn->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-                        btn->update(mappedMousePos, true);
-                        buttonClicked = true;
-                        break; // Znaleziono kliknięty przycisk, wychodzimy z pętli for
-                    }
-                }
-                if (buttonClicked) {
-                    continue;
-                }
-                if (isBattleOver) {
-                    continue;
-                }
-
-
-                bool sacrificeClicked = false;
-                if (manager_->selectedCard != nullptr && manager_->selectedCard->getCost() > 0) {
-                    int requiredCost = manager_->selectedCard->getCost();
-
-                    for (int c = 0; c < 4; ++c) {
-                        Card* cardOnBoard = manager_->getBattleEngine().board[c][1]; // rząd 1 = gracz
-                        if (cardOnBoard != nullptr && cardOnBoard->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-
-                            auto it = std::find(manager_->cardsToSacrifice.begin(), manager_->cardsToSacrifice.end(), cardOnBoard);
-
-                            if (it != manager_->cardsToSacrifice.end()) {
-                                // Odznaczenie karty
-                                cardOnBoard->setSacrificeHighlight(false);
-                                manager_->cardsToSacrifice.erase(it);
-                                std::cout << "Odznaczono karte z ofiary.\n";
-                            } else {
-                                // Zaznaczenie karty
-                                cardOnBoard->setSacrificeHighlight(true);
-                                manager_->cardsToSacrifice.push_back(cardOnBoard);
-                                std::cout << "Zaznaczono ofiare (" << manager_->cardsToSacrifice.size() << "/" << requiredCost << ")\n";
-
-                                // SPRAWDZAMY CZY MAMY JUŻ KOMPLET OFIAR
-                                if (manager_->cardsToSacrifice.size() == static_cast<size_t>(requiredCost)) {
-                                    std::cout << "Osiagnieto wymagany koszt! Karty natychmiastowo znikaja.\n";
-
-                                    for (Card* deadCard : manager_->cardsToSacrifice) {
-                                        for (int boardCol = 0; boardCol < 4; ++boardCol) {
-                                            if (manager_->getBattleEngine().board[boardCol][1] == deadCard) {
-                                                manager_->getBattleEngine().board[boardCol][1] = nullptr;
-                                                break;
-                                            }
-                                        }
-                                        manager_->removeDeployedCard(deadCard);
-                                        delete deadCard;
-                                    }
-                                    manager_->cardsToSacrifice.clear();
-                                }
-                            }
-                            sacrificeClicked = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (sacrificeClicked) {
-                    continue;
-                }
-
-                bool boardClicked = manager_->handleBoardClick(mousePos);
-                if (boardClicked) {
-                    continue;
-                }
-
-                // Obsługa wyboru karty z ręki
-                Player* player = manager_->getBattleEngine().player;
-                if (player != nullptr) {
-                    for (Card* card : player->hand) {
-                        if (card->getGlobalBounds().contains(mousePos.x, mousePos.y)) {
-
-                            if (manager_->canDraw == true) {
-                                GameLog::add("Najpierw dobierz karte!");
-                                continue;
-                            }
-
-                            if (manager_->selectedCard != nullptr && manager_->selectedCard != card) {
-                                manager_->selectedCard->setSelected(false);
-                                player->updateHandPositions();
-                            }
-
-                            manager_->selectedCard = card;
-                            manager_->cardsToSacrifice.clear();
-
-                            card->setPosition(card->getPosition().x, window.getSize().y - card->getGlobalBounds().height - 70.f);
-                            card->setSelected(true);
-                            std::cout << "Zaznaczono karte z reki!\n";
-                            break;
-                        }
-                    }
-                }
-            } // scene_ == 1
-        }
-    }
-}*/

@@ -93,6 +93,48 @@ EnemyAI& GameManager::getAI(){
     return *eai;
 }
 
+void GameManager::resetBattleground() {
+    GameLog::clear();
+
+    // 1. Kasujemy stare obiekty kart z pamięci RAM (zanim PrepareBattle nadpisze je nullptr-ami)
+    for (int col = 0; col < 4; ++col) {
+        for (int row = 0; row < 2; ++row) {
+            if (battleEngine_.board[col][row] != nullptr) {
+                delete battleEngine_.board[col][row];
+                // Nie ustawiamy na nullptr ręcznie, bo PrepareBattle() zaraz to zrobi dla całej tablicy
+            }
+        }
+    }
+
+    if (player->hand.size() > 0) {
+        for (Card* c : player->hand) {
+            delete c; // Jeśli karty w ręce nie były usuwane automatycznie
+        }
+    }
+    player->hand.clear();
+    deployedCards_.clear();
+
+    bones = 0;
+    canDraw = false;
+    selectedCard = nullptr;
+    cardsToSacrifice.clear();
+    bloodCostPaid = false;
+    aiDirectorCredits = 0;
+
+    // 4. Resetowanie punktów zadanych obrażeń na wagach
+    player->damageTaken = 0;
+    eai->damageTaken = 0;
+
+    // 5. Reset silnika bitwy - wywołujemy Twoją funkcję, która wyczyści tablicę board
+    battleEngine_.PrepareBattle();
+
+    // 6. Cofnięcie maszyny stanów do stanu spoczynku (oczekiwanie na ruch gracza)
+    battleEngine_.currentState = BattleState::IDLE;
+
+    // 7. Reset indeksów procesowania fazy ataku
+    battleEngine_.currentProcessRow = 0;
+    battleEngine_.currentProcessCol = 0;
+}
 
 void GameManager::cleanupDeadCards() {
     for (int c = 0; c < 4; ++c) {
@@ -101,6 +143,7 @@ void GameManager::cleanupDeadCards() {
             if (cardOnBoard != nullptr && cardOnBoard->getHealth() <= 0) {
                 if(r==1)
                     bones+=1;
+
                 GameLog::add("-> "+battleEngine_.board[c][r]->name + " umiera.");
                 battleEngine_.board[c][r] = nullptr;
             }
@@ -264,6 +307,7 @@ Card* GameManager::BuildCard(const CardStats& stats,
     Card* c = new Card(stats, _texture, &window, z);
     c->background = _background;
     c->setTexture(c->background);
+    c->setColor(sf::Color(253,220,150));
     c->font = &_font;
     c->window = &window;
 
@@ -276,10 +320,11 @@ Card* GameManager::BuildCard(const CardStats& stats,
 
     CustomTextDrawable* healthText = new CustomTextDrawable(&(c->health));
     healthText->setRelativePosition(90, 140);
-    healthText->text->setCharacterSize(24);
+    healthText->text->setCharacterSize(30);
     healthText->text->setFillColor(sf::Color::Black);
     healthText->text->setFont(_font);
-    healthText->text->setOutlineThickness(1);
+    healthText->text->setOutlineThickness(2);
+    healthText->text->setOutlineColor(sf::Color::White);
     c->addChild(healthText);
 
     CustomTextDrawable* nameText = new CustomTextDrawable();
@@ -293,10 +338,11 @@ Card* GameManager::BuildCard(const CardStats& stats,
 
     CustomTextDrawable* damageText = new CustomTextDrawable(&(c->damage));
     damageText->setRelativePosition(14, 140);
-    damageText->text->setCharacterSize(24);
+    damageText->text->setCharacterSize(30);
     damageText->text->setFillColor(sf::Color::Black);
     damageText->text->setFont(_font);
-    damageText->text->setOutlineThickness(1);
+    damageText->text->setOutlineThickness(2);
+    damageText->text->setOutlineColor(sf::Color::White);
     c->addChild(damageText);
 
     CustomTextDrawable* costText = new CustomTextDrawable(&(c->cost));

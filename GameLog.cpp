@@ -22,6 +22,11 @@ GameLog::GameLog(const sf::Font& font, sf::RenderWindow* window) : CustomDrawabl
     logText.setFillColor(sf::Color::Black);
     logText.setPosition(1500, 110);
 }
+void GameLog::clear(){
+    for(int i=0; i<17;i++)
+        GameLog::add(" ");
+
+}
 
 void GameLog::add(const std::string& msg) {
     if (!instance) return;
@@ -60,6 +65,8 @@ void GameLog::add(const std::string& msg) {
     }
     instance->logText.setString(full);
 }
+
+
 void GameLog::Draw() {
     if (window) {
         window->draw(title);

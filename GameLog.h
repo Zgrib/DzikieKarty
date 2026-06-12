@@ -20,5 +20,7 @@ public:
     // może zadziala
     static void add(const std::string& msg);
 
+    static void clear();
+
     virtual void Draw() override;
 };

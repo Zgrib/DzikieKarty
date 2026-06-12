@@ -136,15 +136,15 @@ void BattleEngine::update(float deltaTime) {
 
             if (opponentCard != nullptr) {
                 opponentCard->health -= activeCard->getDamage();
-                GameLog::add("-> " + activeCard->name + " atakuje " + opponentCard->name + " zadajac \n" + std::to_string(activeCard->getDamage()) + " obrazen.");
+                GameLog::add("-> " + activeCard->name + " atakuje " + opponentCard->name + " zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
 
             } else {
                 if (opponentRow == 0) {
                     eai->damageTaken += activeCard->getDamage();
-                    GameLog::add("-> " + activeCard->name + " atakuje wroga bezposrednio\n zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
+                    GameLog::add("-> " + activeCard->name + " atakuje wroga bezposrednio zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
                 } else {
                     player->damageTaken += activeCard->getDamage();
-                    GameLog::add("-> " + activeCard->name + " atakuje ciebie bezposrednio\n zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
+                    GameLog::add("-> " + activeCard->name + " atakuje ciebie bezposrednio zadajac " + std::to_string(activeCard->getDamage()) + " obrazen.");
                 }
             }
 
