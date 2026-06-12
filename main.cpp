@@ -8,9 +8,11 @@ int main(){
 /*  TODO: (sam sobie pisze)
  *  dokonczyc zagrywanie kart (wyrysowywanie i generalnie strona hand / deck)
  *  sprawdzic czy reszta logoki bedzie wtedy dzialac
+ *
+ *
  *  szale i sprawdzanie
- *
- *
+ *  kosci
+ *  limit na draw karty (1 na ture, po 1)
  *
  *
  */

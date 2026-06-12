@@ -294,9 +294,10 @@ void Context::main_menu(sf::RenderWindow &window){
         ptr->Draw();
     }
     // in window_loop (each frame)
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-    for (Button* btn : menu_buttons_) btn->update(mousePos, isPressed);
+    sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+    for (Button* btn : menu_buttons_) btn->update(mappedMousePos, isPressed);
 
 }
 
@@ -405,8 +406,9 @@ void Context::battleground(sf::RenderWindow &window){
     for(CustomDrawable* ptr: battle_buttons_){
         ptr->Draw();
     }
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
     bool isPressed = sf::Mouse::isButtonPressed(sf::Mouse::Left);
-    for (Button* btn : battle_buttons_) btn->update(mousePos, isPressed);
+    sf::Vector2i mappedMousePos(static_cast<int>(mousePos.x), static_cast<int>(mousePos.y));
+    for (Button* btn : battle_buttons_) btn->update(mappedMousePos, isPressed);
 
 }
