@@ -18,5 +18,6 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
 ![kruk](resources/raven.png)  ![karaczan](resources/roach.png)  ![wąż](resources/waz.png)  ![wilk](resources/wilk.png)  ![nietoperz](resources/nietoperz.png)
 
 kruk                          karaczan                          wąż                        wilk                         nietoperz
+
 ![opos](resources/opos.png)  ![wiewiorka](resources/wiewiorka.png)
 opos                         wiewiorka
