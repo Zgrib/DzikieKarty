@@ -15,10 +15,42 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
     * ⚡ **Koszt zagrania**
 
 ## Postacie w grze
-![kruk](resources/raven.png)  ![karaczan](resources/roach.png)  ![wąż](resources/waz.png)  ![wilk](resources/wilk.png)  ![nietoperz](resources/nietoperz.png)
 
-     kruk         karaczan         wąż         wilk          nietoperz
-
-![opos](resources/opos.png)  ![wiewiorka](resources/wiewiorka.png)
-
-     opos         wiewiorka
+<table>
+  <tr>
+    <td align="center">
+      <img src="resources/raven.png" width="100"><br>
+      <b>Kruk</b>
+    </td>
+    <td align="center">
+      <img src="resources/roach.png" width="100"><br>
+      <b>Karaczan</b>
+    </td>
+    <td align="center">
+      <img src="resources/waz.png" width="100"><br>
+      <b>Wąż</b>
+    </td>
+    <td align="center">
+      <img src="resources/wilk.png" width="100"><br>
+      <b>Wilk</b>
+    </td>
+    <td align="center">
+      <img src="resources/nietoperz.png" width="100"><br>
+      <b>Nietoperz</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="resources/opos.png" width="100"><br>
+      <b>Opos</b>
+    </td>
+    <td align="center">
+      <img src="resources/wiewiorka.png" width="100"><br>
+      <b>Wiewiórka</b>
+    </td>
+    <!-- Puste komórki, żeby zachować układ tabeli -->
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
