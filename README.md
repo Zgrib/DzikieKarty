@@ -14,5 +14,6 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
     * ⚔️ **Atak**
     * ⚡ **Koszt zagrania**
 
-## Karty
-![kruk](resources/raven.png)
+## Postacie w grze
+![kruk](resources/raven.png)  ![karaczan](resources/roach.png)  ![wąż](resources/waz.png) ![wilk](resources/wilk.png)
+![nietoperz](resources/nietoperz.png)  ![opos](resources/opos.png)  ![wiewiorka](resources/wiewiorka.png)
