@@ -13,7 +13,6 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
     * ❤️ **Punkty życia (HP)**
     * ⚔️ **Atak**
     * ⚡ **Koszt zagrania**
-    * ✨ **Umiejętność specjalna**
 
 ## Karty
-![kruk](rescources/raven.png)
+![kruk](resources/raven.png)
