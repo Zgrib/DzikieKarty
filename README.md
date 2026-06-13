@@ -38,8 +38,6 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
       <img src="resources/nietoperz.png" width="100"><br>
       <b>Nietoperz</b>
     </td>
-  </tr>
-  <tr>
     <td align="center">
       <img src="resources/opos.png" width="100"><br>
       <b>Opos</b>
@@ -48,9 +46,5 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
       <img src="resources/wiewiorka.png" width="100"><br>
       <b>Wiewiórka</b>
     </td>
-    <!-- Puste komórki, żeby zachować układ tabeli -->
-    <td></td>
-    <td></td>
-    <td></td>
   </tr>
 </table>
