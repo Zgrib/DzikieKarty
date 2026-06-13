@@ -15,4 +15,7 @@ Głównym celem rozgrywki jest **ucieczka z lasu**. Aby tego dokonać, musisz pr
     * ⚡ **Koszt zagrania**
 
 ## Postacie w grze
-kruk ![kruk](resources/raven.png)  karaczan ![karaczan](resources/roach.png)  wąż![wąż](resources/waz.png) wilk ![wilk](resources/wilk.png)  nietoperz ![nietoperz](resources/nietoperz.png)  opos ![opos](resources/opos.png)  wiewiorka ![wiewiorka](resources/wiewiorka.png)
+![kruk](resources/raven.png)  ![karaczan](resources/roach.png)  ![wąż](resources/waz.png)  ![wilk](resources/wilk.png)  ![nietoperz](resources/nietoperz.png)
+kruk                          karaczan                          wąż                        wilk                         nietoperz
+![opos](resources/opos.png)  ![wiewiorka](resources/wiewiorka.png)
+opos                         wiewiorka
